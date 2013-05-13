@@ -35,7 +35,9 @@ function booking($email, $room_number, $start_date, $start_month, $start_year, $
 	echo "Votre salle virtuelle a bien été réservée!";
 	echo "<br/>";
 	echo "<br/>";
-	echo '<a href="http://atelierphp.com/booking.php">Effectuer une nouvelle réservation</a>';
+	//echo '<a href="http://atelierphp.com/booking.php">Effectuer une nouvelle réservation</a>';
+	echo '<a href="http://109.190.51.176/booking.php">Effectuer une nouvelle réservation</a>';
+	
 }
 function message_occupied(){
 	echo "Cette ressource est occupée";
@@ -43,7 +45,8 @@ function message_occupied(){
 	echo "La liste des salles disponible sera affichée ici";
 	echo "<br/>";
 	echo "<br/>";
-	echo '<a href="http://atelierphp.com/booking.php">Retourner à la page de réservation</a>';
+	//echo '<a href="http://atelierphp.com/booking.php">Retourner à la page de réservation</a>';
+	echo '<a href="http://109.190.51.176/booking.php">Retourner à la page de réservation</a>';
 }
 //cette fonction retourne la liste des salles réservées et les horaires à une date donnée
 function booked_by_date($start_date, $start_month, $start_year, $end_date, $end_month, $end_year){
@@ -186,7 +189,8 @@ else {
 	if (count($room_tab)==0){
 		echo "Aucune salle n'est disponible à ce créneau";
 		echo "<br/>";
-		echo '<a href="http://atelierphp.com/booking.php">Retourner à la page de réservation</a>';
+		//echo '<a href="http://atelierphp.com/booking.php">Retourner à la page de réservation</a>';
+		echo '<a href="http://109.190.51.176/booking.php">Retourner à la page de réservation</a>';		
 	}
 	else {
 		echo "Voici les salles disponible à ce créneau:";
@@ -195,7 +199,7 @@ else {
 			echo "Salle $i";
 		}
 		echo "<br/>";
-		echo '<a href="http://atelierphp.com/booking.php">Retourner à la page de réservation</a>';
+		echo '<a href="http://109.190.51.176/booking.php">Retourner à la page de réservation</a>';
 	}
 }
 
