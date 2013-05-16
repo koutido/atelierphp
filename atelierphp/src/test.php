@@ -107,7 +107,11 @@ echo "<br/>";
 */
 include "commun/connexion.inc.php";
 
-function free($room_number, $start_date, $start_month, $start_year, $start_hour, $start_minute,
+function minute_convert($hour, $minute){
+	$res = ($hour*60 + $minute);
+	return $res;
+}
+function free_same_day($room_number, $start_date, $start_month, $start_year, $start_hour, $start_minute,
 		$end_date, $end_month, $end_year, $end_hour, $end_minute){
 	include "commun/connexion.inc.php";
 	$req="SELECT room_number,start_hour,start_minute,end_hour,end_minute
@@ -130,19 +134,17 @@ function free($room_number, $start_date, $start_month, $start_year, $start_hour,
 			$end_hour_reserv=$res['end_hour'];
 			$end_minute_reserv=$res['end_minute'];
 			//calcul en minute des horaires
-			$t_start_reserv=(60*$start_hour_reserv + $start_minute_reserv);
-			$t_end_reserv=(60*$end_hour_reserv + $end_minute_reserv);
-			$t_start_ask=(60*$start_hour + $start_minute);
-			$t_end_ask=(60*$end_hour + $end_minute);
+			$t_start_reserv=minute_convert($start_hour_reserv, $start_minute_reserv);
+			$t_end_reserv=minute_convert($end_hour_reserv, $end_minute_reserv);
+			$t_start_ask=minute_convert($start_hour, $start_minute);
+			$t_end_ask=minute_convert($end_hour, $end_minute);
 			//heure de début demandée est avant celle réservée
 			if($t_start_ask<$t_start_reserv){
-				//heure fin demandé est inférieure ou égale à celle de début réservée
-				//donc la salle est dispo
-				if($t_end_ask<=$t_start_reserv){
-					$count_free++;
-					//echo "t_end ask <= t_start reservé"."<br/>";
-				}
-				else $count_occupied++;
+				//heure fin demandé est inférieure à celle de début réservée
+				//la salle est occupée
+				if($t_end_ask>$t_start_reserv){
+					$count_occupied++;
+				}				
 			}
 			//heure de début demandée est égale ou suppérieure celle réservée
 			else {
@@ -152,19 +154,16 @@ function free($room_number, $start_date, $start_month, $start_year, $start_hour,
 				}
 				//heure de début demandée est après celle réservée
 				else {
-					//heure de début demandée est égale ou après celle de fin réservée
-					//salle est libre
-					if($t_start_ask>=$t_end_reserv){
-						$count_free++;
-						//echo "t_start ask >= t_end reservé"."<br/>";
-					}
-					else $count_occupied++;
+					//heure de début demandée est inférieure celle de fin réservée
+					//la salle est occupée
+					if($t_start_ask<$t_end_reserv){
+					$count_occupied++;
+
+					}					
 				}
 			}
 		}
-
 	}
-	mysql_close($id_link);
 	//aucun créneau n'est trouvé pour la salle donnée
 	//la salle concernée est libre toute la journée
 	if($occurrence==0){
@@ -182,104 +181,98 @@ function free($room_number, $start_date, $start_month, $start_year, $start_hour,
 	}
 }
 
-function room_free($start_date, $start_month, $start_year, $start_hour, $start_minute,
+function free_day_after($room_number, $start_date, $start_month, $start_year, $start_hour, $start_minute,
 		$end_date, $end_month, $end_year, $end_hour, $end_minute){
 	include "commun/connexion.inc.php";
-	$req="SELECT room_number FROM booking WHERE start_date=$start_date AND start_month=$start_month
-	AND start_year=$start_year AND end_date=$end_date AND end_month=$end_month AND end_year=$end_year";
-
+	$req="SELECT room_number,end_hour,end_minute
+	FROM booking WHERE end_date=$start_date AND start_month=$start_month AND start_year=$start_year
+						AND end_month=$end_month AND end_year=$end_year";
 	$exec=@mysql_query($req,$id_link);
-	$room_number;
-	$room_tab = array();
+	//compteur pour salle réservée
+	$count_occupied=0;
+	//nombre de fois que une salle donnée est réservée dans un jour
+	$occurrence=0;	
 	while($res=@mysql_fetch_array($exec)){
-		$room_number=$res['room_number'];
-		$free=free($room_number, $start_date, $start_month, $start_year, $start_hour, $start_minute,
-				$end_date, $end_month, $end_year, $end_hour, $end_minute);
-		//si la salle est libre pour ce créneau, on l'ajoute dans le tableau
-		if ($free){
-			array_push($room_tab,$room_number);
-			echo "La salle $room_number est libre";
-			echo "<br/>";
+		//un créneau du jour a été réservé pour cette salle
+		if($res['room_number']==$room_number){
+			$occurrence++;
+			$end_hour_reserv=$res['end_hour'];
+			$end_minute_reserv=$res['end_minute'];
+			//calcul en minute des horaires
+			$t_end_reserv=minute_convert($end_hour_reserv, $end_minute_reserv);
+			$t_start_ask=minute_convert($start_hour, $start_minute);
+			$t_end_ask=minute_convert($end_hour, $end_minute);
+
+			if($t_start_ask<$t_end_reserv){
+				$count_occupied++;
+			}
+		}	
+	}
+	//aucun créneau n'est trouvé pour la salle donnée
+	//la salle concernée est libre toute la journée
+	if($occurrence==0){
+		return true;
+	}
+	else{
+		//la salle n'est jamais réservée au créneau donné
+		if($count_occupied==0){
+			return true;
+		}
+		//un créneau réservé est trouvé
+		else{
+			return false;
 		}
 	}
-	$tab_unique = array_unique($room_tab);
-	return $tab_unique;
 }
 
-$start_date=1;
-$start_month=6;
+$start_date=6;
+$start_month=7;
 $start_year=2013;
 
-$start_hour=14;
-$start_minute=0;
+$start_hour=1;
+$start_minute=30;
 
-$end_date=1;
-$end_month=6;
+$end_date=6;
+$end_month=7;
 $end_year=2013;
 
-$end_hour=17;
-$end_minute=0;
+$end_hour=3;
+$end_minute=30;
 
-$req="SELECT room_number FROM booking WHERE start_date=$start_date AND start_month=$start_month
-	AND start_year=$start_year AND end_date=$end_date AND end_month=$end_month AND end_year=$end_year";
+$salle = 2;
+$free_day_after= free_day_after($salle, $start_date, $start_month, $start_year, $start_hour, $start_minute, 
+		$end_date, $end_month, $end_year, $end_hour, $end_minute);
+$free_same_day= free_same_day($salle, $start_date, $start_month, $start_year, $start_hour, $start_minute,
+		$end_date, $end_month, $end_year, $end_hour, $end_minute);
+if($free_day_after){
+	echo "La salle $salle est libre";
+	echo "<br/>";
+}
+else{
+	echo "La salle $salle est occupée";
+	echo "<br/>";
+}
 
-$exec=@mysql_query($req,$id_link);
-
-
-//tableau des numéros de salles par défaut
 $all_room = array();
+//array_push($all_room, 'same');
+//echo count($all_room);
+//echo "<br/>";
+
 for($i=1;$i<5;$i++){
 	array_push($all_room,$i);
 }
+/*
+foreach ($all_room as $i){
+	echo $i;
+	echo "<br/>";
+}*/
+array_unshift($all_room, 'same');
+echo $all_room[0];
 
-$room_tab_diff = array();
-$room_tab_found = array();
-$room_number;
-//le tableau des salles réservées depuis la base de données
-//libres ou occupées par rapport le créneau donné
-$room_tab_temp = @mysql_fetch_array($exec);
-
-if (empty($room_tab_temp['room_number'])){
-	echo "Toutes les salles sont libres";
+for($i=1;$i<5;$i++){
+	echo $all_room[$i];
 	echo "<br/>";
 }
-//on cherche la différence de $all_room et $room_tab_diff
-else{
-	//récupérer les numéros de salles pour stocker dans 
-	//le tableau clé numérique $room_tab_found
-	while($res=@mysql_fetch_array($exec)){
-		array_push($room_tab_found,$res['room_number']);
-	}
-	//enlever les doublons
-	//ce tableau a la clé 'room_number'
-	$tab_unique= array_unique($room_tab_found);
-	//le tableau de différence
-	$room_tab_diff = array_diff($all_room, $tab_unique);
-	//chercher les salles libres
-	foreach ($tab_unique as $i){
-		$free=free($i, $start_date, $start_month, $start_year, $start_hour, $start_minute,
-				$end_date, $end_month, $end_year, $end_hour, $end_minute);
-		//si la salle est libre pour ce créneau, on l'ajoute dans le tableau différence
-		if ($free){
-			array_push($room_tab_diff,$i);
-		}
-	}
-	//si le tableau différence est vide => pas de salle dispo
-	if(empty($room_tab_diff)){
-		echo "Aucune salle n'est disponible à ce créneau";
-		echo "<br/>";
-	}
-	else{
-		echo "Voici les salles libres à ce créneau:";
-		foreach ($room_tab_diff as $i){
-			echo "<br/>";
-			echo "Salle $i";
-		}
-		
-	}
-	
-}	
-	
 
 
 
