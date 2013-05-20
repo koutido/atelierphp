@@ -28,6 +28,8 @@ $room_number=$_POST['room_selected'];
 booking($email, $room_number, $start_date, $start_month, $start_year, $start_hour, $start_minute, 
 		$end_date, $end_month, $end_year, $end_hour, $end_minute);
 
+session_destroy();
+
 ?>
 
 

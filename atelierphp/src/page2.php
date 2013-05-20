@@ -1,4 +1,3 @@
-
 <html>
 
 <head>
@@ -9,7 +8,6 @@
 
 <body>
 
-Voici les salles libres à ce créneau
 <br><br/>
 <form action="page3.php" method="post" >
 
@@ -18,6 +16,7 @@ session_start();
 include "commun/connexion.inc.php";
 include "commun/fonctions.inc.php";
 //ces variables peuvent être portées vers les autres pages
+
 $_SESSION['email']=$_POST['email'];
 $_SESSION['$room_number']=$_POST['room_number'];
 $_SESSION['$start_date']=$_POST['start_date'];
@@ -30,6 +29,7 @@ $_SESSION['$end_month']=$_POST['end_month'];
 $_SESSION['$end_year']=$_POST['end_year'];
 $_SESSION['$end_hour']=$_POST['end_hour'];
 $_SESSION['$end_minute']=$_POST['end_minute'];
+session_destroy();
 
 $email=$_POST['email'];
 $room_number=$_POST['room_number'];
@@ -45,25 +45,17 @@ $end_hour=$_POST['end_hour'];
 $end_minute=$_POST['end_minute'];
 
 
+
 //on récupère la liste des salles libres au créneau cherché
 $room_list = room_free($start_date, $start_month, $start_year, $start_hour, $start_minute, 
 						$end_date, $end_month, $end_year, $end_hour, $end_minute);
 $taille=count($room_list);
 
+//echo "Taille du tableau: $taille";
+
 //la liste résultante contient au moins une salle libre
 if($taille>1){
-	/*
-	echo '<select name="room_number2">';
-	echo '<option value="" selected></option>';
-	for($i=1;$i<$taille;$i++){
-		//on n'affiche pas la salle $room_number car elle est occupée
-		if($room_list[$i]!=$room_number){
-			$val=$room_list[$i];
-			//on ajoute les autres salles dispo dans la liste de sélection
-			echo '<option value="',$val,'">',$val,'</option>';
-		}
-	}
-	echo '</select>';  */
+	echo "Voici les salles libres à ce créneau".'<br/>';
 	for($i=1;$i<$taille;$i++){
 		//on n'affiche pas la salle $room_number car elle est occupée
 		$val=$room_list[$i];
@@ -71,8 +63,7 @@ if($taille>1){
 	}
 	echo "<br/>";
 	//'<input name="email" value=$email >';
-	//echo'<input type="submit" value="Réserver">';
-	
+	echo'<input type="submit" value="Réserver">';	
 }
 else{
 	echo "Aucune salle n'est disponible à ce créneau";
@@ -83,7 +74,7 @@ else{
 
 ?>
 
-<input type="submit" value="Réserver">
+
 </form>
 </body>
 </html>

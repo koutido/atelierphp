@@ -405,7 +405,7 @@ Entrer la date de réservation
 	?>
 	</td>
 	<td>&nbsp; &nbsp; &nbsp;</td>
-	<td><input type="submit" value="Rechercher"></td>
+	<td><input type="submit" name="valider1" value="Rechercher"></td>
 </tr>
 
 </table>

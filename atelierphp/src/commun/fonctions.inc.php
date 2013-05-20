@@ -92,6 +92,21 @@ function free_same_day($room_number, $start_date, $start_month, $start_year, $st
 					}
 				}
 			}
+			//aucun créneau n'est trouvé pour la salle donnée
+			//la salle concernée est libre toute la journée
+			if($occurrence==0){
+				return true;
+			}
+			else{
+				//la salle n'est jamais réservée au créneau donné
+				if($count_occupied==0){
+					return true;
+				}
+				//un créneau réservé est trouvé
+				else{
+					return false;
+				}
+			}
 		}
 	}
 }
@@ -100,7 +115,7 @@ function free_day_after($room_number, $start_date, $start_month, $start_year, $s
 		$end_date, $end_month, $end_year, $end_hour, $end_minute){
 	include "commun/connexion.inc.php";
 	$req="SELECT room_number,end_hour,end_minute
-	FROM booking WHERE end_date=$start_date AND start_month=$start_month AND start_year=$start_year
+	FROM booking WHERE end_date=$end_date AND start_month=$start_month AND start_year=$start_year
 	AND end_month=$end_month AND end_year=$end_year";
 	$exec=@mysql_query($req,$id_link);
 	//compteur pour salle réservée
@@ -119,6 +134,7 @@ function free_day_after($room_number, $start_date, $start_month, $start_year, $s
 			$t_end_ask=minute_convert($end_hour, $end_minute);
 
 			if($t_start_ask<$t_end_reserv){
+				//echo "occupée";
 				$count_occupied++;
 			}
 		}
@@ -126,11 +142,13 @@ function free_day_after($room_number, $start_date, $start_month, $start_year, $s
 	//aucun créneau n'est trouvé pour la salle donnée
 	//la salle concernée est libre toute la journée
 	if($occurrence==0){
+		//echo "jamais réservée";
 		return true;
 	}
 	else{
 		//la salle n'est jamais réservée au créneau donné
 		if($count_occupied==0){
+			//echo "jamais réservée d'après la recherche";
 			return true;
 		}
 		//un créneau réservé est trouvé
@@ -149,10 +167,8 @@ function room_free($start_date, $start_month, $start_year, $start_hour, $start_m
 	$req_same="SELECT room_number FROM booking WHERE start_date=$start_date AND start_month=$start_month
 	AND start_year=$start_year AND end_date=$end_date AND end_month=$end_month AND end_year=$end_year";
 	//requete quand la réservation dépasse au jour suivant
-	$req_after="SELECT room_number FROM booking WHERE end_date=$start_date AND start_month=$start_month
+	$req_after="SELECT room_number FROM booking WHERE end_date=$end_date AND start_month=$start_month
 	AND start_year=$start_year AND end_month=$end_month AND end_year=$end_year";
-	$exec_same=@mysql_query($req_same,$id_link);
-	$exec_after=@mysql_query($req_after,$id_link);
 	//tableau des numéros de salles par défaut
 	$all_room = array();
 	for($i=1;$i<5;$i++){
@@ -163,6 +179,7 @@ function room_free($start_date, $start_month, $start_year, $start_hour, $start_m
 	$room_number;
 	//le cas même jour
 	if($start_date==$end_date && $start_month==$end_month && $start_year==$end_year){
+		$exec_same=@mysql_query($req_same,$id_link);
 		//récupérer les numéros de salles pour stocker dans
 		//le tableau clé numérique $room_tab_found
 		while($res=@mysql_fetch_array($exec_same)){
@@ -175,6 +192,7 @@ function room_free($start_date, $start_month, $start_year, $start_hour, $start_m
 		$room_tab_diff = array_diff($all_room, $tab_unique);
 		//chercher les salles libres
 		foreach ($tab_unique as $i){
+			
 			$free=free_same_day($i, $start_date, $start_month, $start_year, $start_hour, $start_minute,
 					$end_date, $end_month, $end_year, $end_hour, $end_minute);
 			//si la salle est libre pour ce créneau, on l'ajoute dans le tableau différence
@@ -189,10 +207,14 @@ function room_free($start_date, $start_month, $start_year, $start_hour, $start_m
 	}
 	//le cas du dépassement au jour suivant
 	else{
+		//echo "dépassement d'un jour" .'<br/>';
+		$exec_after=@mysql_query($req_after,$id_link);
 		//récupérer les numéros de salles pour stocker dans
 		//le tableau clé numérique $room_tab_found
 		while($res=@mysql_fetch_array($exec_after)){
 			array_push($room_tab_found,$res['room_number']);
+			//$a=$res['room_number'];
+			//echo "salle $a";
 		}
 		//enlever les doublons
 		//ce tableau a la clé 'room_number'
@@ -205,6 +227,7 @@ function room_free($start_date, $start_month, $start_year, $start_hour, $start_m
 					$end_date, $end_month, $end_year, $end_hour, $end_minute);
 			//si la salle est libre pour ce créneau, on l'ajoute dans le tableau différence
 			if ($free){
+				//echo "salle libre";
 				array_push($room_tab_diff,$i);
 			}
 		}
@@ -216,9 +239,4 @@ function room_free($start_date, $start_month, $start_year, $start_hour, $start_m
 
 }
 
-function global_session($var){
-	if(!array_key_exists($var,$_SESSION))
-		$_SESSION[$var]='';
-	$GLOBALS[$var]=&$_SESSION[$var];
-}
 ?>
