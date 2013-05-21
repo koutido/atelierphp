@@ -15,21 +15,6 @@
 session_start();
 include "commun/connexion.inc.php";
 include "commun/fonctions.inc.php";
-//ces variables peuvent être portées vers les autres pages
-
-$_SESSION['email']=$_POST['email'];
-$_SESSION['$room_number']=$_POST['room_number'];
-$_SESSION['$start_date']=$_POST['start_date'];
-$_SESSION['$start_month']=$_POST['start_month'];
-$_SESSION['$start_year']=$_POST['start_year'];
-$_SESSION['$start_hour']=$_POST['start_hour'];
-$_SESSION['$start_minute']=$_POST['start_minute'];
-$_SESSION['$end_date']=$_POST['end_date'];
-$_SESSION['$end_month']=$_POST['end_month'];
-$_SESSION['$end_year']=$_POST['end_year'];
-$_SESSION['$end_hour']=$_POST['end_hour'];
-$_SESSION['$end_minute']=$_POST['end_minute'];
-session_destroy();
 
 $email=$_POST['email'];
 $room_number=$_POST['room_number'];
@@ -43,6 +28,24 @@ $end_month=$_POST['end_month'];
 $end_year=$_POST['end_year'];
 $end_hour=$_POST['end_hour'];
 $end_minute=$_POST['end_minute'];
+
+//ces variables peuvent être portées vers les autres pages
+
+$_SESSION['email']=$_POST['email'];
+$_SESSION['room_number']=$_POST['room_number'];
+$_SESSION['start_date']=$_POST['start_date'];
+$_SESSION['start_month']=$_POST['start_month'];
+$_SESSION['start_year']=$_POST['start_year'];
+$_SESSION['start_hour']=$_POST['start_hour'];
+$_SESSION['start_minute']=$_POST['start_minute'];
+$_SESSION['end_date']=$_POST['end_date'];
+$_SESSION['end_month']=$_POST['end_month'];
+$_SESSION['end_year']=$_POST['end_year'];
+$_SESSION['end_hour']=$_POST['end_hour'];
+$_SESSION['end_minute']=$_POST['end_minute'];
+//session_destroy();
+
+
 
 
 
@@ -68,8 +71,8 @@ if($taille>1){
 else{
 	echo "Aucune salle n'est disponible à ce créneau";
 	echo "<br/>";
-	//echo '<a href="http://atelierphp.com/booking.php">Retourner à la page de réservation</a>';
-	echo '<a href="http://109.190.51.176/page1.php">Retourner à la page de recherche</a>';
+	echo '<a href="http://atelierphp.com/page1.php">Retourner à la page de réservation</a>';
+	//echo '<a href="http://109.190.51.176/page1.php">Retourner à la page de recherche</a>';
 }
 
 ?>
