@@ -25,9 +25,16 @@ $end_minute=$_SESSION['end_minute'];
 
 $room_number=$_POST['room_selected'];
 
+$reserve=$_POST['reserve'];
+$modify=$_POST['modify'];
+if(isset($reserve)){
 booking($email, $room_number, $start_date, $start_month, $start_year, $start_hour, $start_minute, 
 		$end_date, $end_month, $end_year, $end_hour, $end_minute);
+}
 
+if(isset($modify)){
+	echo "Salle à supprimer";
+}
 
 
 ?>

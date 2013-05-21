@@ -26,13 +26,15 @@ function message_occupied(){
 	echo '<a href="http://109.190.51.176/booking.php">Retourner à la page de réservation</a>';
 }
 //cette fonction retourne la liste des salles réservées et les horaires à une date donnée
-function booked_by_date($start_date, $start_month, $start_year, $end_date, $end_month, $end_year){
+function room_booked($start_date, $start_month, $start_year, $end_date, $end_month, $end_year){
 	include "commun/connexion.inc.php";
-	$req="SELECT room_number,start_hour,start_minute,end_hour,end_minutes
+	$req="SELECT room_number FROM booking
 	WHERE start_date=$start_date AND start_month=$start_month AND start_year=$start_year
 	AND end_date=$end_date AND end_month=$end_month AND end_year=$end_year";
 	$exec=@mysql_query($req,$id_link);
 	$res=@mysql_fetch_array($exec);
+	//$taille=count($res);
+	//echo "taille $taille ";
 	return $res;
 }
 //cette fonction calcule le nombre total des minutes réservées
