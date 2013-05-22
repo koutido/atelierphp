@@ -145,7 +145,7 @@ function verif_formulaire(){
 <body>
 Rechercher une salle
 <br><br/>
-<form action="page2.php" method="post" onSubmit="return verif_formulaire()">
+<form name="reservation" action="recherche.php" method="post" onSubmit="return verif_formulaire()">
 <table> 
 <tr>
 	<td>Demandeur</td>
@@ -407,8 +407,16 @@ Entrer la date de réservation
 	<td>&nbsp; &nbsp; &nbsp;</td>
 	<td><input type="submit" name="valider1" value="Rechercher une salle disponible"></td>
 	<td>&nbsp; &nbsp; &nbsp;</td>
-	<td><input type="submit" name="valider2" value="Rechercher une réservation faite"></td>
+	<td><input type="submit" name="valider2" value="Modifier / Supprimer une réservation"></td>
 </tr>
+
+<table> 
+	<br> <br> <br>
+	<tr>
+		<td><input type="submit" name="valider3" value="Afficher toutes les réservations"></td>
+	</tr>
+</table>
+
 
 </table>
 </form>

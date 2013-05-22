@@ -6,11 +6,22 @@
 <script LANG="JavaScript">
 <!--
 function verif_valider2(){
-	if (!document.getElementByName('for_delete').checked){
-		alert("Veuillez choisir la salle à supprimer");
-		return false;
+	var val=document.getElementsByName("for_delete");
+	var i=0;
+	var res=false;
+	for(i=0;i<val.length;i++){
+		if (val.item(i).checked){
+			res=true;
+		}
+		else{
+			res=false;
+		}
 	}
-	return true;
+	if(res){
+		return true;
+	}
+	alert("Veuillez choisir la salle à supprimer");
+	return false;
 }
 
 function verif_page2(){
@@ -27,7 +38,7 @@ function verif_page2(){
 <body>
 
 <br><br/>
-<form name=page2 action="page3.php" method="post" onSubmit="return verif_page2()">
+<form name="recherche" action="actions.php" method="post" >
 
 <?php
 session_start();
@@ -49,6 +60,7 @@ $end_minute=$_POST['end_minute'];
 
 $valider1=$_POST['valider1'];
 $valider2=$_POST['valider2'];
+$valider3=$_POST['valider3'];
 
 //ces variables peuvent être portées vers les autres pages
 
@@ -92,50 +104,71 @@ if(isset($valider1)){
 	else{
 		echo "Aucune salle n'est disponible à ce créneau";
 		echo "<br/>";
-		echo '<a href="http://atelierphp.com/page1.php">Retourner à la page de réservation</a>';
+		echo '<a href="http://atelierphp.com/reservation.php">Retourner à la page de réservation</a>';
 		//echo '<a href="http://109.190.51.176/page1.php">Retourner à la page de recherche</a>';
 	}
 }
 //rechercher les salles réservées
-//exception à gérer: salle réservée dépasse 1 jour
 if(isset($valider2)){
 	//cette requete retourne les salles réservées et les horaires
 	$req="SELECT * FROM booking
 	WHERE start_date=$start_date AND start_month=$start_month AND start_year=$start_year
-	AND end_date=$end_date AND end_month=$end_month AND end_year=$end_year";
+	OR end_date=$end_date AND end_month=$end_month AND end_year=$end_year";
 	$exec=@mysql_query($req,$id_link);
+	$cle;
 	//$res=@mysql_fetch_array($exec);
 	
 	//$room_list=room_booked($start_date, $start_month, $start_year, $end_date, $end_month, $end_year);
 	//$taille=count($room_list);
-	echo "Liste des salles réservées au ".$start_date.'/'.$start_month.'/'.$start_year.'<br/>';
-	echo "<br/>";
-	while($res=@mysql_fetch_array($exec)){
-		$val = $res['room_number'];
-		echo '<input type="radio" name="for_delete" value=',$val,'>Salle ',$val;
-		echo " de ".$res['start_hour'].'h'.$res['start_minute'].' à '.$res['end_hour'].'h'.$res['end_minute'];
-		echo "  |  Demandeur: ".$res['email'].'<br/>';
-		//echo "Salle ". $res['room_number'].'<br>';
+	//quand la requête nous renvoie qqch
+	if(mysql_num_rows($exec)){
+		echo "Liste des salles réservées au ".$start_date.'/'.$start_month.'/'.$start_year.'<br/>';
+		echo "<br/>";
+		while($res=@mysql_fetch_array($exec)){
+			$val = $res['room_number'];
+			$cle=$res['clef'];
+			echo '<input type="radio" id="delete" name="for_delete" value=',$cle,'>Salle ',$val;
+			echo " de ".$res['start_hour'].'h'.$res['start_minute'].' à '.$res['end_hour'].'h'.$res['end_minute'];
+			echo "  |  Demandeur: ".$res['email'].'<br/>';
+			
+			//echo "Salle ". $res['room_number'].'<br>';
+		}
+		echo "<br/>";
+		echo'<input name="modify" type="submit" value="Modifier"> &nbsp';
+		echo'<input name="delete" type="submit" value="Supprimer">';
 	}
-	echo "<br/>";
-	echo'<input name="modify" type="submit" value="Supprimer">';
-	//echo "taille du tableau $taille" .'<br/>';
-	/*
-	for ($i=0;$i<$taille;$i++){
-		$room_number=$room_list[$i];
-		$start_hour=$room_list['start_hour'];
-		$start_minute=$room_list['start_minute'];
-		$end_hour=$room_list['end_hour'];
-		$end_minute=$room_list['end_minute'];
-		echo "salle $room_number" .'<br/>';
-		echo "heure de début $start_hour h$start_minute" .'<br/>';
-		echo "heure de fin $end_hour h$end_minute" .'<br/>';
-		
-	}*/
-
-	
-
-	
+	//le cas o`u rien n'est trouvé
+	else{
+		echo "Il n'y a pas de salle réservée pour ce jour".'<br/>'.'<br/>';
+		echo '<a href="http://atelierphp.com/reservation.php">Revenir à la page de réservation</a>';
+	}	
+}
+//afficher toutes les réservation en les triant par le mois
+if(isset($valider3)){
+	$req="SELECT * FROM booking ORDER BY start_month";
+	$exec=@mysql_query($req,$id_link);
+	$cle;
+	if(mysql_num_rows($exec)){
+		echo "Liste des salles réservées".'<br/>';
+		echo "<br/>";
+		while($res=@mysql_fetch_array($exec)){
+			$val = $res['room_number'];
+			$cle=$res['clef'];
+			echo '<input type="radio" id="delete" name="for_delete" value=',$val,'>Salle ',$val;
+			echo " de ".$res['start_hour'].'h'.$res['start_minute']." le ".$res['start_date'].'/'.$res['start_month'].'/'.$res['start_year'];
+			echo " à ".$res['end_hour'].'h'.$res['end_minute']." le ".$res['end_date'].'/'.$res['end_month'].'/'.$res['end_year'];
+			echo "  |  Demandeur: ".$res['email'].'<br/>';
+			
+			//echo "Salle ". $res['room_number'].'<br>';
+		}
+		echo "<br/>";
+		echo'<input name="delete" type="submit" value="Supprimer">';
+	}
+	//le cas o`u rien n'est trouvé
+	else{
+		echo "Il devrait avoir un problème de la base de données!".'<br/>'.'<br/>';
+		echo '<a href="http://atelierphp.com/reservation.php">Revenir à la page de réservation</a>';
+	}
 }
 ?>
 

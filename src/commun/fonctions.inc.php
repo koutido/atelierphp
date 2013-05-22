@@ -12,8 +12,18 @@ function booking($email, $room_number, $start_date, $start_month, $start_year, $
 	echo "Votre salle virtuelle a bien été réservée!";
 	echo "<br/>";
 	echo "<br/>";
-	echo '<a href="http://atelierphp.com/page1.php">Effectuer une nouvelle réservation</a>';
+	echo '<a href="http://atelierphp.com/reservation.php">Effectuer une nouvelle réservation</a>';
 	//echo '<a href="http://109.190.51.176/booking.php">Effectuer une nouvelle réservation</a>';
+}
+//supprimer un réservation de la base
+function delete($clef){
+	include "commun/connexion.inc.php";
+	$sql="DELETE FROM booking WHERE clef=$clef";
+	@mysql_query($sql,$id_link);	
+	echo "La réservation vient d'être supprimée!";
+	echo "<br/>";
+	echo "<br/>";
+	echo '<a href="http://atelierphp.com/reservation.php">Retourner à la page de réservation</a>';
 }
 
 function message_occupied(){
