@@ -9,7 +9,7 @@ function submitMe(obj){
 		document.getElementById('accueil').action ="reservation.php";
 	}
 	if(obj.value == "Rechercher une réservation"){
-		document.getElementById('accueil').action ="display.php";
+		document.getElementById('accueil').action ="choix.php";
 	}
 	if(obj.value == "Salles à modérer pour aujourd'hui"){
 		document.getElementById('accueil').action ="moderation.php";

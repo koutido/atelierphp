@@ -40,7 +40,8 @@ if(isset($modifier)){
 }
 
 if(isset($delete)){
-	delete($clef);
+	echo "La réservation $clef à supprimer plus tard";
+	//delete($clef);
 }
 
 

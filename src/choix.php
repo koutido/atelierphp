@@ -4,13 +4,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Search mode</title>
 
-
 </head>
 
 <body>
 Affichage des réservations
 <br><br/>
-<form name="Display" id="display" method="post" action="display_room.php" >
+<form name="Choix" id="choix" method="post" action="recherche.php" >
 <table> 
 	<tr>
 		<td><input type="submit" name="all" value="Afficher toutes les réservations"></td>
@@ -100,7 +99,7 @@ Affichage des réservations
 	<tr>
 		<td>Recherche par email</td>
 		<td>&nbsp; &nbsp;</td>
-		<td><input type="email" name="email"></td>
+		<td><input type="email" name="email2"></td>
 		<td>&nbsp; &nbsp; &nbsp;</td>
 		<td><input type="submit" name="adresse" value="Valider"></td>
 	</tr>
