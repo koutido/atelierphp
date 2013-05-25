@@ -30,9 +30,26 @@ $delete=$_POST['delete'];
 $modifier=$_POST['modify'];
 $clef=$_POST['for_delete'];
 
+$comment=$_POST['Comment'];
+
 if(isset($reserve)){
-booking($email, $room_number, $start_date, $start_month, $start_year, $start_hour, $start_minute, 
-		$end_date, $end_month, $end_year, $end_hour, $end_minute);
+	//génération du codepin
+	$alphabet = "123456789";
+	$nbcar = 4; 
+	$i = 0;
+	$codepin = "";
+	//initialisation du hasard avec le moment en microsecondes.
+	srand((double)microtime()*1000000);
+	while ($i<$nbcar) {
+		$valcar = rand(0, strlen($alphabet));
+		$codepin .= substr($alphabet,$valcar,1);
+		$i++;
+	}	
+	echo "Voici le codepin: ".$codepin .'<br>' ;
+	echo "voici le commentaire: ".$comment;
+	add_info($comment,$codepin);
+	//booking($email, $room_number, $start_date, $start_month, $start_year, $start_hour, $start_minute, 
+	//	$end_date, $end_month, $end_year, $end_hour, $end_minute);
 }
 
 if(isset($modifier)){

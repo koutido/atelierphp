@@ -7,13 +7,20 @@ function booking($email, $room_number, $start_date, $start_month, $start_year, $
 	start_minute, end_date, end_month, end_year, end_hour, end_minute)
 	VALUES ('$email', $room_number, $start_date, $start_month, $start_year, $start_hour, $start_minute,
 	$end_date, $end_month, $end_year, $end_hour, $end_minute)";
-	@mysql_query($sql,$id_link);
+	@mysql_query($sql,$id_link);	
 
 	echo "Votre salle virtuelle a bien été réservée!";
 	echo "<br/>";
 	echo "<br/>";
 	echo '<a href="http://atelierphp.com/reservation.php">Effectuer une nouvelle réservation</a>';
-	//echo '<a href="http://109.190.51.176/booking.php">Effectuer une nouvelle réservation</a>';
+	//echo '<a href="http://10/booking.php">Effectuer une nouvelle réservation</a>';
+}
+//ajouter des informations supplémentaires: numéro accusé de réception,
+//le code pin, le commentaire
+function add_info($comment,$codepin){
+	include "commun/connexion.inc.php";
+	$sql="INSERT INTO information (comment,pin_code) VALUES ('$comment',$codepin)";
+	@mysql_query($sql,$id_link);
 }
 //supprimer un réservation de la base
 function delete($clef){

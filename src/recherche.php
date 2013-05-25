@@ -112,9 +112,16 @@ if(isset($recherche)){
 			$val=$room_list[$i];
 			echo '<input type="radio" name="room_selected" value=',$val,'>Salle ',$val,'<br/>';
 		}
-		echo "<br/>";
+		echo "<br>";
+		echo "Commentaires".'<br>';
+		echo '<textarea cols="40" rows="10" name="Comment">'.'</textarea>';
+		//echo "<br>"."<br>";
 		//'<input name="email" value=$email >';
-		echo'<input name="reserve" type="submit" value="Réserver">';	
+		echo '&nbsp&nbsp&nbsp';
+		echo'<input name="reserve" type="submit" value="Réserver">';
+		//echo '<input name="Comment" type="text" size="60" width="130px" >';
+		//echo '<input name="Comment" type="text" size="30" style="padding:30px" >';
+		
 	}
 	else{
 		echo "Aucune salle n'est disponible à ce créneau";
