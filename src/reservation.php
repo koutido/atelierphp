@@ -138,14 +138,26 @@ function verif_formulaire(){
 	return false;
 }
 
+function submitMe(obj){
+ 	if(obj.value == "Accueil"){
+		document.getElementById('reserve').action ="index.php";
+	}	
+	document.getElementById('reserve').submit();
+}
+
 </script>
 
 </head>
 
 <body>
-Rechercher une salle
-<br><br/>
-<form name="reservation" action="recherche.php" method="post" onSubmit="return verif_formulaire()">
+
+<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">
+
+
+<p>Rechercher une salle</p>
+<br>
+<form name="reservation" id="reserve" action="recherche.php" method="post" onSubmit="return verif_formulaire()">
+
 <table> 
 <tr>
 	<td>Demandeur</td>

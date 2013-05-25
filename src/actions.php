@@ -3,7 +3,21 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Room booked</title>
 </head>
+<script LANG="JavaScript">
+<!--
+function submitMe(obj){
+ 	if(obj.value == "Accueil"){
+		document.getElementById('actions').action ="index.php";
+	}
+ 	if(obj.value == "Reservation"){
+		document.getElementById('actions').action ="reservation.php";
+	}
+	
+	document.getElementById('actions').submit();
+}
 
+</script>
+<form name="Actions" id="actions" method="post" action="" >
 <body>
 
 <?php
@@ -53,10 +67,16 @@ if(isset($reserve)){
 }
 
 if(isset($modifier)){
+	echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
+	echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
+	echo '<br>'.'<br>';
 	echo "A faire";
 }
 
 if(isset($delete)){
+	echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
+	echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
+	echo '<br>'.'<br>';
 	echo "La réservation $clef à supprimer plus tard";
 	//delete($clef);
 }

@@ -37,7 +37,6 @@ function verif_page2(){
 
 <body>
 
-<br><br/>
 <form name="recherche" action="actions.php" method="post" >
 
 <?php
@@ -68,6 +67,8 @@ $date=$_POST['date'];
 $adresse=$_POST['adresse'];
 //bouton pour recherche par code pin
 $code=$_POST['code'];
+//bouton pour revenir à accueil
+$accueil=$_POST['accueil'];
 
 $jour=$_POST['jour'];
 $mois=$_POST['mois'];
@@ -92,7 +93,13 @@ $_SESSION['end_year']=$_POST['end_year'];
 $_SESSION['end_hour']=$_POST['end_hour'];
 $_SESSION['end_minute']=$_POST['end_minute'];
 //session_destroy();
-
+/*
+if(isset($accueil)){
+	echo "accueil";
+	//'<form action="index.php">';
+	echo '<a href="index.php">bonjour</a>';
+}
+*/
 
 //rechercher les salles libres
 if(isset($recherche)){

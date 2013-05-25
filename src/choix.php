@@ -3,14 +3,29 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Search mode</title>
+<script LANG="JavaScript">
+<!--
+function submitMe(obj){
+ 	if(obj.value == "Accueil"){
+		document.getElementById('choix').action ="index.php";
+	}
+	
+	document.getElementById('choix').submit();
+}
 
+</script>
 </head>
 
 <body>
-Affichage des réservations
-<br><br/>
+<br>
 <form name="Choix" id="choix" method="post" action="recherche.php" >
-<table> 
+
+<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">
+
+<br><br>
+<p>Affichage des réservations</p>
+
+<table>
 	<tr>
 		<td><input type="submit" name="all" value="Afficher toutes les réservations"></td>
 	</tr>	
