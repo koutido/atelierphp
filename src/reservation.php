@@ -149,12 +149,12 @@ function submitMe(obj){
 
 </head>
 
-<body>
+<body bgcolor="CCE1FB">
 
 <input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">
 
 
-<p>Rechercher une salle</p>
+<p align="center">Rechercher une salle</p>
 <br>
 <form name="reservation" id="reserve" action="recherche.php" method="post" onSubmit="return verif_formulaire()">
 

@@ -18,7 +18,7 @@ function submitMe(obj){
 
 </script>
 <form name="Actions" id="actions" method="post" action="" >
-<body>
+<body bgcolor="CCE1FB">
 
 <?php
 session_start();
@@ -45,39 +45,65 @@ $modifier=$_POST['modify'];
 $clef=$_POST['for_delete'];
 
 $comment=$_POST['Comment'];
+$creator=$_POST['creator'];
 
-if(isset($reserve)){
+if(isset($reserve)){	
 	//génération du codepin
 	$alphabet = "123456789";
 	$nbcar = 4; 
 	$i = 0;
 	$codepin = "";
+	//id = le dernier clef de la table booking + 1
+	//id permet de récupérer la réservation faite dans la table booking
+	$req="SELECT MAX(clef) FROM booking";
+	$exec=@mysql_query($req,$id_link);
+	$res=@mysql_fetch_array($exec);
+	$id=$res['MAX(clef)']+1;
+	//la référence pour l'accusé de réception
+	$req="SELECT MAX(ref) FROM information";
+	$exec=@mysql_query($req,$id_link);
+	$res=@mysql_fetch_array($exec);
+	$ref=$res['MAX(ref)']+1;
 	//initialisation du hasard avec le moment en microsecondes.
 	srand((double)microtime()*1000000);
 	while ($i<$nbcar) {
-		$valcar = rand(0, strlen($alphabet));
+		$valcar = rand(1, strlen($alphabet));
 		$codepin .= substr($alphabet,$valcar,1);
 		$i++;
 	}	
-	echo "Voici le codepin: ".$codepin .'<br>' ;
-	echo "voici le commentaire: ".$comment;
-	add_info($comment,$codepin);
-	//booking($email, $room_number, $start_date, $start_month, $start_year, $start_hour, $start_minute, 
-	//	$end_date, $end_month, $end_year, $end_hour, $end_minute);
+	//echo "Voici le codepin: ".$codepin .'<br>' ;
+	//echo "Réservation créée par: ".$creator .'<br>' ;
+	//echo "voici le commentaire: ".$comment;
+	//ajout des infos
+	add_info($id,$creator,$ref,$codepin,$comment);
+	//ajout de réservation
+	booking($email, $room_number, $start_date, $start_month, $start_year, $start_hour, $start_minute, 
+		$end_date, $end_month, $end_year, $end_hour, $end_minute);
+	
+	echo 'Votre salle '.$room_number.' a été réservée avec succès'.'<br>';
+	echo 'Créée par '.$creator.'<br>';
+	echo 'Code pin '.$codepin.'<br>';
+	echo 'Accusé de réception à mettre ici avec son numéro '.$ref.'<br>';
+	echo 'Les informations de connexion à mettre ici';
+	echo '<br>'.'<br>';
+	echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
+	echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
+	
+	
 }
 
 if(isset($modifier)){
 	echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
 	echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
 	echo '<br>'.'<br>';
-	echo "A faire";
+	echo "A faire plus tard si nécessaire";
 }
 
 if(isset($delete)){
 	echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
 	echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
 	echo '<br>'.'<br>';
-	echo "La réservation $clef à supprimer plus tard";
+	echo 'La suppression de la réservation '.$clef.' a été désactivée temporairement';
 	//delete($clef);
 }
 

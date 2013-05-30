@@ -30,14 +30,23 @@ function verif_page2(){
 	}
 	return false;
 }
+function submitMe(obj){
+ 	if(obj.value == "Accueil"){
+		document.getElementById('recherche').action ="index.php";
+	}
+ 	if(obj.value == "Reservation"){
+		document.getElementById('recherche').action ="reservation.php";
+	}	
+	document.getElementById('recherche').submit();
+}
 
 
 </script>
 </head>
 
-<body>
+<body bgcolor="CCE1FB">
 
-<form name="recherche" action="actions.php" method="post" >
+<form name="Recherche" id="recherche" action="actions.php" method="post" >
 
 <?php
 session_start();
@@ -67,8 +76,14 @@ $date=$_POST['date'];
 $adresse=$_POST['adresse'];
 //bouton pour recherche par code pin
 $code=$_POST['code'];
+//bouton pour recherche par code pin
+$choix_creator=$_POST['choix_creator'];
 //bouton pour revenir à accueil
 $accueil=$_POST['accueil'];
+//le code pin
+$code_pin=$_POST['pin'];
+//le nom du créateur de réservation
+$creator=$_POST['creator'];
 
 $jour=$_POST['jour'];
 $mois=$_POST['mois'];
@@ -119,8 +134,21 @@ if(isset($recherche)){
 			$val=$room_list[$i];
 			echo '<input type="radio" name="room_selected" value=',$val,'>Salle ',$val,'<br/>';
 		}
-		echo "<br>";
-		echo "Commentaires".'<br>';
+		echo '<br>';
+		echo 'Créée par: '.'&nbsp';
+		echo '<select name="creator">';
+		echo '<option value="" selected></option>';
+		echo '<option value="Magali">Magali</option>';
+		echo '<option value="Fazeela">Fazeela</option>';
+		echo '<option value="Fawaz">Fawaz</option>';
+		echo '<option value="Nyez">Nyez</option>';
+		echo '<option value="Ufuk">Ufuk</option>';
+		echo '<option value="Fouad">Fouad</option>';
+		echo '<option value="Khuong">Khuong</option>';
+		echo '</select>';
+		echo '<br><br>';
+		echo 'Commentaires';
+		echo '<br>';
 		echo '<textarea cols="40" rows="10" name="Comment">'.'</textarea>';
 		//echo "<br>"."<br>";
 		//'<input name="email" value=$email >';
@@ -130,22 +158,29 @@ if(isset($recherche)){
 		//echo '<input name="Comment" type="text" size="30" style="padding:30px" >';
 		
 	}
-	else{
+	else{		
+		echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
+		echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
+		echo '<br>'.'<br>';
 		echo "Aucune salle n'est disponible à ce créneau";
-		echo "<br/>";
-		echo '<a href="http://atelierphp.com/reservation.php">Retourner à la page de réservation</a>';
+		//echo "<br/>";
+		//echo '<a href="http://atelierphp.com/reservation.php">Retourner à la page de réservation</a>';
 		//echo '<a href="http://109.190.51.176/page1.php">Retourner à la page de recherche</a>';
 	}
 }
 
 //afficher toutes les réservation en les triant par le mois
 if(isset($all)) {
+	
 	$req="SELECT * FROM booking ORDER BY start_month";
 	$exec=@mysql_query($req,$id_link);
 	$cle;
 	if(mysql_num_rows($exec)){
+		echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
+		echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
+		echo '<br>'.'<br>';
 		echo "Liste des salles réservées".'<br/>';
-		echo "<br/>";
+		echo '<br/>';
 		while($res=@mysql_fetch_array($exec)){
 			$val = $res['room_number'];
 			$cle=$res['clef'];
@@ -162,13 +197,17 @@ if(isset($all)) {
 	}
 	//le cas o`u rien n'est trouvé
 	else{
+		echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
+		echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
+		echo '<br>'.'<br>';
 		echo "Il devrait avoir un problème de la base de données!".'<br/>'.'<br/>';
-		echo '<a href="http://atelierphp.com/reservation.php">Revenir à la page de réservation</a>';
+		//echo '<a href="http://atelierphp.com/reservation.php">Revenir à la page de réservation</a>';
 	}
 }
 
 //rechercher les salles réservées par date
 if(isset($date)){
+	
 	//cette requete retourne les salles réservées et les horaires
 	$req="SELECT * FROM booking
 	WHERE start_date=$jour AND start_month=$mois AND start_year=$an ORDER BY start_hour";
@@ -181,6 +220,9 @@ if(isset($date)){
 	//$taille=count($room_list);
 	//quand la requête nous renvoie qqch
 	if(mysql_num_rows($exec)){
+		echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
+		echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
+		echo '<br>'.'<br>';
 		echo "Liste des salles réservées au ";
 		echo "<font color=\"#0005F6\">$jour/$mois/$an</font>";
 		//echo '<div style="color:#160095;">'.$jour.'/'.$mois.'/'.$an.'</div>';
@@ -200,19 +242,26 @@ if(isset($date)){
 	}
 	//le cas o`u rien n'est trouvé
 	else{
-		echo "Il n'y a pas de salle réservée pour ce jour".'<br/>'.'<br/>';
-		echo '<a href="http://atelierphp.com/reservation.php">Revenir à la page de réservation</a>';
+		echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
+		echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
+		echo '<br>'.'<br>';
+		echo 'Il n\'y a pas de salle réservée à la date donnée';
+		//echo '<a href="http://atelierphp.com/reservation.php">Revenir à la page de réservation</a>';
 	}
 }
 
 //recherche des salles réservées par adresse email
 if(isset($adresse)){
+	
 	$req="SELECT * FROM booking WHERE email='$email2' ORDER BY start_month ";
 	$exec=@mysql_query($req,$id_link);
 	$cle;
 	//quand la requête nous renvoie qqch
 	if(mysql_num_rows($exec)){
-		echo "Liste des salles réservées par l'utilisateur: ";
+		echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
+		echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
+		echo '<br>'.'<br>';
+		echo "Liste des salles réservées pour l'utilisateur: ";
 		"<font color=\"#0005F6\">$jour/$mois/$an</font>";
 		echo "<font color=\"#0005F6\">$email2</font>";
 		echo "<br/>".'<br>';
@@ -232,8 +281,88 @@ if(isset($adresse)){
 	}
 	//le cas o`u rien n'est trouvé
 	else{
-		echo "Il n'y a pas de salle réservée pour cet utilisateur $email2".'<br/>'.'<br/>';
-		echo '<a href="http://atelierphp.com/reservation.php">Revenir à la page de réservation</a>';
+		echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
+		echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
+		echo '<br>'.'<br>';
+		echo "Il n'y a pas de salle réservée pour l'utilisateur $email2";
+		//echo '<a href="http://atelierphp.com/reservation.php">Revenir à la page de réservation</a>';
+	}
+}
+//cas code pin à regarder
+//recherche des salles réservées par code pin
+if(isset($code)){
+	
+	$req = "SELECT * FROM booking WHERE clef=(SELECT id FROM information WHERE code_pin=$code_pin) ORDER BY start_month";
+	$exec=@mysql_query($req,$id_link);
+	$cle;
+	//quand la requête nous renvoie qqch
+	if(mysql_num_rows($exec)){
+		echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
+		echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
+		echo '<br>'.'<br>';
+		echo 'Liste des salles réservées avec le code pin ';
+		//"<font color=\"#0005F6\">$jour/$mois/$an</font>";
+		echo "<font color=\"#0005F6\">$code_pin</font>";
+		echo '<br><br>';
+		while($res=@mysql_fetch_array($exec)){
+			$val = $res['room_number'];
+			$cle=$res['clef'];
+			echo '<input type="radio" id="delete" name="for_delete" value=',$cle,'>Salle ',$val;
+			echo " de ".$res['start_hour'].'h'.$res['start_minute']." le ".$res['start_date'].'/'.$res['start_month'].'/'.$res['start_year'];
+			echo " à ".$res['end_hour'].'h'.$res['end_minute']." le ".$res['end_date'].'/'.$res['end_month'].'/'.$res['end_year'];
+			echo '<br/>';
+
+			//echo "Salle ". $res['room_number'].'<br>';
+		}
+		echo "<br/>";
+		echo'<input name="modify" type="submit" value="Modifier"> &nbsp';
+		echo'<input name="delete" type="submit" value="Supprimer">';
+	}
+	//le cas o`u rien n'est trouvé
+	else{
+		echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
+		echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
+		echo '<br>'.'<br>';
+		echo 'Il n\'y a pas de salle réservée avec le code pin '.$code_pin.'<br/>'.'<br/>';
+		//echo '<a href="http://atelierphp.com/reservation.php">Revenir à la page de réservation</a>';
+	}
+}
+//recherche des réservations par créateur
+if(isset($choix_creator)){
+	
+	$req = "SELECT * FROM booking WHERE clef=(SELECT id FROM information WHERE creator='$creator') ORDER BY start_month";
+	$exec=@mysql_query($req,$id_link);
+	$cle;
+	//quand la requête nous renvoie qqch
+	if(mysql_num_rows($exec)){
+		echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
+		echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
+		echo '<br>'.'<br>';
+		echo 'Liste des réservations créées par ';
+		//"<font color=\"#0005F6\">$jour/$mois/$an</font>";
+		echo "<font color=\"#0005F6\">$creator</font>";
+		echo '<br><br>';
+		while($res=@mysql_fetch_array($exec)){
+			$val = $res['room_number'];
+			$cle=$res['clef'];
+			echo '<input type="radio" id="delete" name="for_delete" value=',$cle,'>Salle ',$val;
+			echo " de ".$res['start_hour'].'h'.$res['start_minute']." le ".$res['start_date'].'/'.$res['start_month'].'/'.$res['start_year'];
+			echo " à ".$res['end_hour'].'h'.$res['end_minute']." le ".$res['end_date'].'/'.$res['end_month'].'/'.$res['end_year'];
+			echo '<br/>';
+
+			//echo "Salle ". $res['room_number'].'<br>';
+		}
+		echo "<br/>";
+		echo'<input name="modify" type="submit" value="Modifier"> &nbsp';
+		echo'<input name="delete" type="submit" value="Supprimer">';
+	}
+	//le cas o`u rien n'est trouvé
+	else{
+		echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
+		echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
+		echo '<br>'.'<br>';
+		echo 'Il n\'y a pas de réservations créées par '.$creator.'<br/>'.'<br/>';
+		//echo '<a href="http://atelierphp.com/reservation.php">Revenir à la page de réservation</a>';
 	}
 }
 

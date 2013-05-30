@@ -21,7 +21,7 @@ function submitMe(obj){
 </script>
 </head>
 
-<body>
+<body bgcolor="CCE1FB">
 <p><center><h3>Bienvenue à la conciergerie</h3></center></p>
 
 <br> <br> <br> <br>
@@ -31,10 +31,15 @@ function submitMe(obj){
 	<tr>
 		<td><input type="button" name="ok1" value="Effectuer une réservation" onclick="submitMe(this)"> &nbsp; &nbsp; &nbsp;</td>
 		<td><input type="button" name="ok2" value="Rechercher une réservation" onclick="submitMe(this)"> &nbsp; &nbsp; &nbsp;</td>
-		<td><input type="button" name="ok3" value="Salles à modérer pour aujourd'hui" onclick="submitMe(this)"></td>		
+		<!--
+		<td><input type="button" name="ok3" value="Salles à modérer pour aujourd'hui" onclick="submitMe(this)"></td>
+		-->	
+			
 	</tr>
 
 </table>
+
+<p align="center"><font color="#F91C00">La liste des salles à modérer sera affichée ici</font></p>
 
 <?php
 ?>

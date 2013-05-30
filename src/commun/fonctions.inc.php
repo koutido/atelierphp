@@ -9,17 +9,21 @@ function booking($email, $room_number, $start_date, $start_month, $start_year, $
 	$end_date, $end_month, $end_year, $end_hour, $end_minute)";
 	@mysql_query($sql,$id_link);	
 
-	echo "Votre salle virtuelle a bien été réservée!";
-	echo "<br/>";
-	echo "<br/>";
-	echo '<a href="http://atelierphp.com/reservation.php">Effectuer une nouvelle réservation</a>';
+	//echo "Votre salle virtuelle a bien été réservée!";
+	//echo "<br/>";
+	//echo "<br/>";
+	//echo '<a href="http://atelierphp.com/reservation.php">Effectuer une nouvelle réservation</a>';
 	//echo '<a href="http://10/booking.php">Effectuer une nouvelle réservation</a>';
 }
 //ajouter des informations supplémentaires: numéro accusé de réception,
 //le code pin, le commentaire
-function add_info($comment,$codepin){
-	include "commun/connexion.inc.php";
-	$sql="INSERT INTO information (comment,pin_code) VALUES ('$comment',$codepin)";
+function add_info($id,$creator,$ref,$codepin,$comment){
+	include "commun/connexion.inc.php";	
+	//mysql_query("SET NAMES UTF8");
+	//pour l'insertion des apostrophes et éviter les attaques d'injection sql
+	$comment=(mysql_real_escape_string($comment));
+	$sql="INSERT INTO information (id,creator,ref,code_pin,comment) 
+	VALUES ($id,'$creator',$ref,$codepin,'$comment')";	
 	@mysql_query($sql,$id_link);
 }
 //supprimer un réservation de la base
@@ -28,11 +32,10 @@ function delete($clef){
 	$sql="DELETE FROM booking WHERE clef=$clef";
 	@mysql_query($sql,$id_link);	
 	echo "La réservation vient d'être supprimée!";
-	echo "<br/>";
-	echo "<br/>";
-	echo '<a href="http://atelierphp.com/reservation.php">Retourner à la page de réservation</a>';
+	echo '<br><br>';
+	//echo "<br/>";
+	//echo '<a href="http://atelierphp.com/reservation.php">Retourner à la page de réservation</a>';
 }
-
 function message_occupied(){
 	echo "Cette ressource est occupée";
 	echo "<br/>";
@@ -40,7 +43,7 @@ function message_occupied(){
 	echo "<br/>";
 	echo "<br/>";
 	//echo '<a href="http://atelierphp.com/booking.php">Retourner à la page de réservation</a>';
-	echo '<a href="http://109.190.51.176/booking.php">Retourner à la page de réservation</a>';
+	//echo '<a href="http://109.190.51.176/booking.php">Retourner à la page de réservation</a>';
 }
 //cette fonction retourne la liste des salles réservées et les horaires à une date donnée
 function room_booked($start_date, $start_month, $start_year, $end_date, $end_month, $end_year){

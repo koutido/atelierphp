@@ -16,14 +16,13 @@ function submitMe(obj){
 </script>
 </head>
 
-<body>
-<br>
+<body bgcolor="CCE1FB">
+
 <form name="Choix" id="choix" method="post" action="recherche.php" >
 
 <input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">
 
-<br><br>
-<p>Affichage des réservations</p>
+<p align="center">Affichage des réservations</p>
 
 <table>
 	<tr>
@@ -128,6 +127,28 @@ function submitMe(obj){
 		<td><input type="number" name="pin"></td>
 		<td>&nbsp; &nbsp; &nbsp;</td>
 		<td><input type="submit" name="code" value="Valider"></td>
+	</tr>
+</table>
+
+<br> <br>
+<table>
+	<tr>
+		<td>Recherche par créateur</td>
+		<td>&nbsp; &nbsp;</td>
+		<td>
+			<select name="creator">
+			<option value="" selected></option>
+			<option value="Magali">Magali</option>
+			<option value="Fazeela">Fazeela</option>
+			<option value="Fawaz">Fawaz</option>
+			<option value="Nyez">Nyez</option>
+			<option value="Ufuk">Ufuk</option>
+			<option value="Fouad">Fouad</option>
+			<option value="Khuong">Khuong</option>
+			</select>
+		</td>
+		<td>&nbsp; &nbsp; &nbsp;</td>
+		<td><input type="submit" name="choix_creator" value="Valider"></td>
 	</tr>
 </table>
 
