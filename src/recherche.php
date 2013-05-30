@@ -115,7 +115,9 @@ if(isset($accueil)){
 	echo '<a href="index.php">bonjour</a>';
 }
 */
+?>
 
+<?php 
 //rechercher les salles libres
 if(isset($recherche)){
 	
@@ -128,6 +130,9 @@ if(isset($recherche)){
 
 	//la liste résultante contient au moins une salle libre
 	if($taille>1){
+		echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
+		echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
+		echo '<br>'.'<br>';
 		echo "Voici les salles libres à ce créneau".'<br/>';
 		for($i=1;$i<$taille;$i++){
 			//on n'affiche pas la salle $room_number car elle est occupée
@@ -168,32 +173,108 @@ if(isset($recherche)){
 		//echo '<a href="http://109.190.51.176/page1.php">Retourner à la page de recherche</a>';
 	}
 }
-
-//afficher toutes les réservation en les triant par le mois
-if(isset($all)) {
-	
-	$req="SELECT * FROM booking ORDER BY start_month";
-	$exec=@mysql_query($req,$id_link);
-	$cle;
+?>
+<table border="1" width="1200">
+<tbody>
+<?php 
+	//////////////afficher toutes les réservation en les triant par le mois
+	if(isset($all)) {
+		$req="SELECT * FROM booking ORDER BY start_month";
+		$exec=@mysql_query($req,$id_link);
+		$cle;
 	if(mysql_num_rows($exec)){
 		echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
 		echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
-		echo '<br>'.'<br>';
+		echo '<br>'.'<br>';		
+		echo 'Cet affichage sera enlevé plus tard'.'<br><br>';
 		echo "Liste des salles réservées".'<br/>';
-		echo '<br/>';
-		while($res=@mysql_fetch_array($exec)){
-			$val = $res['room_number'];
-			$cle=$res['clef'];
-			echo '<input type="radio" id="delete" name="for_delete" value=',$cle,'>Salle ',$val;
-			echo " de ".$res['start_hour'].'h'.$res['start_minute']." le ".$res['start_date'].'/'.$res['start_month'].'/'.$res['start_year'];
-			echo " à ".$res['end_hour'].'h'.$res['end_minute']." le ".$res['end_date'].'/'.$res['end_month'].'/'.$res['end_year'];
-			echo "  <=====>  Demandeur: ".$res['email'].'<br/>';
+		echo '<br><br>';
+?>
+	<tr>
+		<td><p align="center"><b>Salle</b><p></td>
+		<td><p align="center"><b>Créée par</b><p></td>
+		<td><p align="center"><b>De</b><p></td>
+		<td><p align="center"><b>A</b><p></td>
+		<td><p align="center"><b>Demandeur</b><p></td>
+		<td><p align="center"><b>Code pin</b><p></td>
+		<td><p align="center"><b>Commentaire</b><p></td>
+		<td><p align="center"><b>Action</b><p></td>
+	</tr>
+	
+<?php 
+	while($res=@mysql_fetch_array($exec)){
+		$cle=$res['clef'];	
+		$req2="SELECT * FROM information WHERE id=$cle";
+		$exec2=@mysql_query($req2,$id_link);
+		$res2=@mysql_fetch_array($exec2);
+?>
+	<tr>
+		<td>
+<?php
+		//numéro de la salle 
+		echo $res['room_number'];
+?>
+		</td>
+	
+		<td>
+<?php 
+		//le créateur
+		echo $res2['creator'];
+?>
+		</td>
+	
+		<td>
+<?php 
+		//l'heure de début
+		echo $res['start_hour'].'h'.$res['start_minute']." le ".$res['start_date'].'/'.$res['start_month'].'/'.$res['start_year'];
+?>
+		</td>
+	
+		<td>
+<?php
+		//l'heure de fin 
+		echo $res['end_hour'].'h'.$res['end_minute']." le ".$res['end_date'].'/'.$res['end_month'].'/'.$res['end_year'];
+?>
+		</td>
+	
+		<td>
+<?php 
+		//le demandeur
+		echo $res['email'];
+?>
+		</td>
 
-			//echo "Salle ". $res['room_number'].'<br>';
-		}
-		echo "<br/>";
-		echo'<input name="modify" type="submit" value="Modifier"> &nbsp';
+		<td>
+<?php
+		//le code pin 	
+		echo $res2['code_pin'];
+?>
+		</td>
+
+		<td>
+<?php 
+		//le commentaire
+		echo $res2['comment'];
+?>
+		</td>
+
+		<td>
+<?php 
+		//les actions
+		echo '<input type="radio" id="delete" name="for_delete" value=',$cle,'>';
 		echo'<input name="delete" type="submit" value="Supprimer">';
+?>
+		</td>
+
+
+<?php 
+	}
+?>
+	</tr>
+</tbody>
+</table>
+
+<?php 
 	}
 	//le cas o`u rien n'est trouvé
 	else{
@@ -201,11 +282,12 @@ if(isset($all)) {
 		echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
 		echo '<br>'.'<br>';
 		echo "Il devrait avoir un problème de la base de données!".'<br/>'.'<br/>';
-		//echo '<a href="http://atelierphp.com/reservation.php">Revenir à la page de réservation</a>';
 	}
 }
+?>
 
-//rechercher les salles réservées par date
+<?php 
+//////////////rechercher les salles réservées par date
 if(isset($date)){
 	
 	//cette requete retourne les salles réservées et les horaires
@@ -227,19 +309,78 @@ if(isset($date)){
 		echo "<font color=\"#0005F6\">$jour/$mois/$an</font>";
 		//echo '<div style="color:#160095;">'.$jour.'/'.$mois.'/'.$an.'</div>';
 		echo '<br>'.'<br>';
+?>
+	<tr>
+		<td><p align="center"><b>Salle</b><p></td>
+		<td><p align="center"><b>Créée par</b><p></td>
+		<td><p align="center"><b>Demandeur</b><p></td>
+		<td><p align="center"><b>Code pin</b><p></td>
+		<td><p align="center"><b>Commentaire</b><p></td>
+		<td><p align="center"><b>Action</b><p></td>
+	</tr>
+<?php 
 		while($res=@mysql_fetch_array($exec)){
 			$val = $res['room_number'];
 			$cle=$res['clef'];
-			echo '<input type="radio" id="delete" name="for_delete" value=',$cle,'>Salle ',$val;
-			echo " de ".$res['start_hour'].'h'.$res['start_minute'].' à '.$res['end_hour'].'h'.$res['end_minute'];
-			echo "  <=====>  Demandeur: ".$res['email'].'<br/>';
+			$req2="SELECT * FROM information WHERE id=$cle";
+			$exec2=@mysql_query($req2,$id_link);
+			$res2=@mysql_fetch_array($exec2);
+?>
 
-			//echo "Salle ". $res['room_number'].'<br>';
-		}
-		echo "<br/>";
-		echo'<input name="modify" type="submit" value="Modifier"> &nbsp';
+	<tr>
+		<td>
+<?php
+		//numéro de la salle 
+		echo $res['room_number'];
+?>
+		</td>
+	
+		<td>
+<?php 
+		//le créateur
+		echo $res2['creator'];
+?>
+		</td>
+	
+		<td>
+<?php 
+		//le demandeur
+		echo $res['email'];
+?>
+		</td>
+
+		<td>
+<?php
+		//le code pin 	
+		echo $res2['code_pin'];
+?>
+		</td>
+
+		<td>
+<?php 
+		//le commentaire
+		echo $res2['comment'];
+?>
+		</td>
+
+		<td>
+<?php 
+		//les actions
+		echo '<input type="radio" id="delete" name="for_delete" value=',$cle,'>';
 		echo'<input name="delete" type="submit" value="Supprimer">';
-	}
+?>
+		</td>
+
+
+<?php 
+		}
+?>
+	</tr>
+</tbody>
+</table>
+
+<?php
+	} 
 	//le cas o`u rien n'est trouvé
 	else{
 		echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
@@ -249,8 +390,10 @@ if(isset($date)){
 		//echo '<a href="http://atelierphp.com/reservation.php">Revenir à la page de réservation</a>';
 	}
 }
+?>
 
-//recherche des salles réservées par adresse email
+<?php 
+//////////////recherche des salles réservées par adresse email
 if(isset($adresse)){
 	
 	$req="SELECT * FROM booking WHERE email='$email2' ORDER BY start_month ";
@@ -265,19 +408,84 @@ if(isset($adresse)){
 		"<font color=\"#0005F6\">$jour/$mois/$an</font>";
 		echo "<font color=\"#0005F6\">$email2</font>";
 		echo "<br/>".'<br>';
+?>
+	<tr>
+		<td><p align="center"><b>Salle</b><p></td>
+		<td><p align="center"><b>Créée par</b><p></td>
+		<td><p align="center"><b>De</b><p></td>
+		<td><p align="center"><b>A</b><p></td>
+		<td><p align="center"><b>Code pin</b><p></td>
+		<td><p align="center"><b>Commentaire</b><p></td>
+		<td><p align="center"><b>Action</b><p></td>
+	</tr>
+<?php 
 		while($res=@mysql_fetch_array($exec)){
 			$val = $res['room_number'];
 			$cle=$res['clef'];
-			echo '<input type="radio" id="delete" name="for_delete" value=',$cle,'>Salle ',$val;
-			echo " de ".$res['start_hour'].'h'.$res['start_minute']." le ".$res['start_date'].'/'.$res['start_month'].'/'.$res['start_year'];
-			echo " à ".$res['end_hour'].'h'.$res['end_minute']." le ".$res['end_date'].'/'.$res['end_month'].'/'.$res['end_year'];
-			echo '<br/>';
+			$req2="SELECT * FROM information WHERE id=$cle";
+			$exec2=@mysql_query($req2,$id_link);
+			$res2=@mysql_fetch_array($exec2);
+?>
 
-			//echo "Salle ". $res['room_number'].'<br>';
-		}
-		echo "<br/>";
-		echo'<input name="modify" type="submit" value="Modifier"> &nbsp';
+	<tr>
+		<td>
+<?php
+		//numéro de la salle 
+		echo $res['room_number'];
+?>
+		</td>
+	
+		<td>
+<?php 
+		//le créateur
+		echo $res2['creator'];
+?>
+		</td>
+	
+		<td>
+<?php 
+		//l'heure de début
+		echo $res['start_hour'].'h'.$res['start_minute']." le ".$res['start_date'].'/'.$res['start_month'].'/'.$res['start_year'];
+?>
+		</td>
+	
+		<td>
+<?php
+		//l'heure de fin 
+		echo $res['end_hour'].'h'.$res['end_minute']." le ".$res['end_date'].'/'.$res['end_month'].'/'.$res['end_year'];
+?>
+		</td>
+
+		<td>
+<?php
+		//le code pin 	
+		echo $res2['code_pin'];
+?>
+		</td>
+
+		<td>
+<?php 
+		//le commentaire
+		echo $res2['comment'];
+?>
+		</td>
+
+		<td>
+<?php 
+		//les actions
+		echo '<input type="radio" id="delete" name="for_delete" value=',$cle,'>';
 		echo'<input name="delete" type="submit" value="Supprimer">';
+?>
+		</td>
+
+
+<?php 
+	}
+?>
+	</tr>
+</tbody>
+</table>
+<?php
 	}
 	//le cas o`u rien n'est trouvé
 	else{
@@ -288,8 +496,10 @@ if(isset($adresse)){
 		//echo '<a href="http://atelierphp.com/reservation.php">Revenir à la page de réservation</a>';
 	}
 }
-//cas code pin à regarder
-//recherche des salles réservées par code pin
+?>
+
+<?php 
+///////////////recherche des salles réservées par code pin
 if(isset($code)){
 	
 	$req = "SELECT * FROM booking WHERE clef=(SELECT id FROM information WHERE code_pin=$code_pin) ORDER BY start_month";
@@ -304,19 +514,84 @@ if(isset($code)){
 		//"<font color=\"#0005F6\">$jour/$mois/$an</font>";
 		echo "<font color=\"#0005F6\">$code_pin</font>";
 		echo '<br><br>';
+?>
+	<tr>
+		<td><p align="center"><b>Salle</b><p></td>
+		<td><p align="center"><b>Créée par</b><p></td>
+		<td><p align="center"><b>De</b><p></td>
+		<td><p align="center"><b>A</b><p></td>
+		<td><p align="center"><b>Demandeur</b><p></td>
+		<td><p align="center"><b>Commentaire</b><p></td>
+		<td><p align="center"><b>Action</b><p></td>
+	</tr>
+<?php 
 		while($res=@mysql_fetch_array($exec)){
 			$val = $res['room_number'];
 			$cle=$res['clef'];
-			echo '<input type="radio" id="delete" name="for_delete" value=',$cle,'>Salle ',$val;
-			echo " de ".$res['start_hour'].'h'.$res['start_minute']." le ".$res['start_date'].'/'.$res['start_month'].'/'.$res['start_year'];
-			echo " à ".$res['end_hour'].'h'.$res['end_minute']." le ".$res['end_date'].'/'.$res['end_month'].'/'.$res['end_year'];
-			echo '<br/>';
+			$req2="SELECT * FROM information WHERE id=$cle";
+			$exec2=@mysql_query($req2,$id_link);
+			$res2=@mysql_fetch_array($exec2);
+?>
 
-			//echo "Salle ". $res['room_number'].'<br>';
-		}
-		echo "<br/>";
-		echo'<input name="modify" type="submit" value="Modifier"> &nbsp';
+	<tr>
+		<td>
+<?php
+		//numéro de la salle 
+		echo $res['room_number'];
+?>
+		</td>
+	
+		<td>
+<?php 
+		//le créateur
+		echo $res2['creator'];
+?>
+		</td>
+	
+		<td>
+<?php 
+		//l'heure de début
+		echo $res['start_hour'].'h'.$res['start_minute']." le ".$res['start_date'].'/'.$res['start_month'].'/'.$res['start_year'];
+?>
+		</td>
+	
+		<td>
+<?php
+		//l'heure de fin 
+		echo $res['end_hour'].'h'.$res['end_minute']." le ".$res['end_date'].'/'.$res['end_month'].'/'.$res['end_year'];
+?>
+		</td>
+	
+		<td>
+<?php 
+		//le demandeur
+		echo $res['email'];
+?>
+		</td>
+
+		<td>
+<?php 
+		//le commentaire
+		echo $res2['comment'];
+?>
+		</td>
+
+		<td>
+<?php 
+		//les actions
+		echo '<input type="radio" id="delete" name="for_delete" value=',$cle,'>';
 		echo'<input name="delete" type="submit" value="Supprimer">';
+?>
+		</td>
+
+
+<?php 
+	}
+?>
+	</tr>
+</tbody>
+</table>
+<?php 
 	}
 	//le cas o`u rien n'est trouvé
 	else{
@@ -327,7 +602,10 @@ if(isset($code)){
 		//echo '<a href="http://atelierphp.com/reservation.php">Revenir à la page de réservation</a>';
 	}
 }
-//recherche des réservations par créateur
+?>
+
+<?php 
+//////////recherche des réservations par créateur
 if(isset($choix_creator)){
 	
 	$req = "SELECT * FROM booking WHERE clef=(SELECT id FROM information WHERE creator='$creator') ORDER BY start_month";
@@ -342,19 +620,82 @@ if(isset($choix_creator)){
 		//"<font color=\"#0005F6\">$jour/$mois/$an</font>";
 		echo "<font color=\"#0005F6\">$creator</font>";
 		echo '<br><br>';
+?>
+	<tr>
+		<td><p align="center"><b>Salle</b><p></td>
+		<td><p align="center"><b>De</b><p></td>
+		<td><p align="center"><b>A</b><p></td>
+		<td><p align="center"><b>Demandeur</b><p></td>
+		<td><p align="center"><b>Code pin</b><p></td>
+		<td><p align="center"><b>Commentaire</b><p></td>
+		<td><p align="center"><b>Action</b><p></td>
+	</tr>
+<?php 
 		while($res=@mysql_fetch_array($exec)){
 			$val = $res['room_number'];
 			$cle=$res['clef'];
-			echo '<input type="radio" id="delete" name="for_delete" value=',$cle,'>Salle ',$val;
-			echo " de ".$res['start_hour'].'h'.$res['start_minute']." le ".$res['start_date'].'/'.$res['start_month'].'/'.$res['start_year'];
-			echo " à ".$res['end_hour'].'h'.$res['end_minute']." le ".$res['end_date'].'/'.$res['end_month'].'/'.$res['end_year'];
-			echo '<br/>';
+			$req2="SELECT * FROM information WHERE id=$cle";
+			$exec2=@mysql_query($req2,$id_link);
+			$res2=@mysql_fetch_array($exec2);
+?>
+	<tr>
+		<td>
+<?php
+		//numéro de la salle 
+		echo $res['room_number'];
+?>
+		</td>
+	
+		<td>
+<?php 
+		//l'heure de début
+		echo $res['start_hour'].'h'.$res['start_minute']." le ".$res['start_date'].'/'.$res['start_month'].'/'.$res['start_year'];
+?>
+		</td>
+	
+		<td>
+<?php
+		//l'heure de fin 
+		echo $res['end_hour'].'h'.$res['end_minute']." le ".$res['end_date'].'/'.$res['end_month'].'/'.$res['end_year'];
+?>
+		</td>
+	
+		<td>
+<?php 
+		//le demandeur
+		echo $res['email'];
+?>
+		</td>
 
-			//echo "Salle ". $res['room_number'].'<br>';
-		}
-		echo "<br/>";
-		echo'<input name="modify" type="submit" value="Modifier"> &nbsp';
+		<td>
+<?php
+		//le code pin 	
+		echo $res2['code_pin'];
+?>
+		</td>
+
+		<td>
+<?php 
+		//le commentaire
+		echo $res2['comment'];
+?>
+		</td>
+
+		<td>
+<?php 
+		//les actions
+		echo '<input type="radio" id="delete" name="for_delete" value=',$cle,'>';
 		echo'<input name="delete" type="submit" value="Supprimer">';
+?>
+		</td>
+
+<?php 
+	}
+?>
+	</tr>
+</tbody>
+</table>			
+<?php 
 	}
 	//le cas o`u rien n'est trouvé
 	else{
@@ -365,11 +706,7 @@ if(isset($choix_creator)){
 		//echo '<a href="http://atelierphp.com/reservation.php">Revenir à la page de réservation</a>';
 	}
 }
-
-
 ?>
-
-
 
 </form>
 </body>

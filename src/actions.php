@@ -47,7 +47,10 @@ $clef=$_POST['for_delete'];
 $comment=$_POST['Comment'];
 $creator=$_POST['creator'];
 
-if(isset($reserve)){	
+if(isset($reserve)){
+	echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
+	echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
+	echo '<br>'.'<br>';
 	//génération du codepin
 	$alphabet = "123456789";
 	$nbcar = 4; 
@@ -84,11 +87,7 @@ if(isset($reserve)){
 	echo 'Créée par '.$creator.'<br>';
 	echo 'Code pin '.$codepin.'<br>';
 	echo 'Accusé de réception à mettre ici avec son numéro '.$ref.'<br>';
-	echo 'Les informations de connexion à mettre ici';
-	echo '<br>'.'<br>';
-	echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
-	echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
-	
+	echo 'Les informations de connexion à mettre ici';	
 	
 }
 
@@ -106,17 +105,7 @@ if(isset($delete)){
 	echo 'La suppression de la réservation '.$clef.' a été désactivée temporairement';
 	//delete($clef);
 }
-
-
 ?>
-
-
-
-
-
-
-
-
 
 
 </body>
