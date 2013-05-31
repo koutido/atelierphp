@@ -502,7 +502,7 @@ if(isset($adresse)){
 ///////////////recherche des salles réservées par code pin
 if(isset($code)){
 	
-	$req = "SELECT * FROM booking WHERE clef=(SELECT id FROM information WHERE code_pin=$code_pin) ORDER BY start_month";
+	$req = "SELECT * FROM booking WHERE clef IN (SELECT id FROM information WHERE code_pin=$code_pin) ORDER BY start_month";
 	$exec=@mysql_query($req,$id_link);
 	$cle;
 	//quand la requête nous renvoie qqch
@@ -608,7 +608,7 @@ if(isset($code)){
 //////////recherche des réservations par créateur
 if(isset($choix_creator)){
 	
-	$req = "SELECT * FROM booking WHERE clef=(SELECT id FROM information WHERE creator='$creator') ORDER BY start_month";
+	$req = "SELECT * FROM booking WHERE clef IN (SELECT id FROM information WHERE creator='$creator') ORDER BY start_month";
 	$exec=@mysql_query($req,$id_link);
 	$cle;
 	//quand la requête nous renvoie qqch

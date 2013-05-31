@@ -7,10 +7,73 @@
 <!--
 function submitMe(obj){
  	if(obj.value == "Accueil"){
-		document.getElementById('choix').action ="index.php";
-	}
-	
+		document.getElementById('choix').action ="index.php";		
+	}	
 	document.getElementById('choix').submit();
+}
+
+function verif_date(){
+	if (document.Choix.jour.value.length<1){
+		alert("Veuillez choisir la date");
+		document.Choix.jour.focus();
+		return false;
+	}
+	if (document.forms[0].mois.value.length<1){
+		alert("Veuillez choisir le mois");
+		document.forms[0].mois.focus();
+		return false;
+	}
+	if (document.forms[0].an.value.length<1){
+		alert("Veuillez choisir l'année");
+		document.forms[0].an.focus();
+		return false;
+	}	
+	return true;
+}
+function verif_champs_email(){
+	if (document.forms[0].email2.value.length<5){
+		alert("Veuillez entrer l'adresse mail du demandeur");
+		document.forms[0].email2.focus();
+		return false;
+	}
+	return true;
+}
+
+function verif_format_email(){
+	var c=document.forms[0].email2.value;
+	var test="" + c;
+	for(var k = 0; k < test.length;k++){
+		var d = test.substring(k,k+1);
+		if(d == "@"){
+			return true;
+		}
+	}
+	alert("L'adresse email du demandeur n'est pas valide. Merci de vérifier");
+	document.forms[0].email2.focus();
+	return false;
+}
+function verif_email(){
+	if(verif_champs_email()==true && verif_format_email()==true){
+		return true;
+	}
+	return false;
+}
+function verif_pin(){
+	if (document.Choix.pin.value.length<1){
+		alert("Veuillez entrer le code pin");
+		document.Choix.pin.focus();
+		return false;
+	}
+	return true;
+}
+
+function verif_creator(){
+	if (document.Choix.creator.value.length<1){
+		alert("Veuillez sélectionner un créateur");
+		document.Choix.creator.focus();
+		return false;
+	}
+	return true;
 }
 
 </script>
@@ -18,7 +81,7 @@ function submitMe(obj){
 
 <body bgcolor="CCE1FB">
 
-<form name="Choix" id="choix" method="post" action="recherche.php" >
+<form name="Choix" id="choix" method="post" action="recherche.php">
 
 <input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">
 
@@ -104,7 +167,7 @@ function submitMe(obj){
 	?>
 	</td>
 	<td>&nbsp; &nbsp; &nbsp;</td>
-	<td><input type="submit" name="date" value="Valider"></td>
+	<td><input type="submit" name="date" value="Valider" onclick="return verif_date()"></td>
 </tr>
 </table>
 
@@ -115,7 +178,7 @@ function submitMe(obj){
 		<td>&nbsp; &nbsp;</td>
 		<td><input type="email" name="email2"></td>
 		<td>&nbsp; &nbsp; &nbsp;</td>
-		<td><input type="submit" name="adresse" value="Valider"></td>
+		<td><input type="submit" name="adresse" value="Valider" onclick="return verif_email()"></td>
 	</tr>
 </table>
 
@@ -126,7 +189,7 @@ function submitMe(obj){
 		<td>&nbsp; &nbsp;</td>
 		<td><input type="number" name="pin"></td>
 		<td>&nbsp; &nbsp; &nbsp;</td>
-		<td><input type="submit" name="code" value="Valider"></td>
+		<td><input type="submit" name="code" value="Valider" onclick="return verif_pin()"></td>
 	</tr>
 </table>
 
@@ -148,7 +211,7 @@ function submitMe(obj){
 			</select>
 		</td>
 		<td>&nbsp; &nbsp; &nbsp;</td>
-		<td><input type="submit" name="choix_creator" value="Valider"></td>
+		<td><input type="submit" name="choix_creator" value="Valider" onclick="return verif_creator()"></td>
 	</tr>
 </table>
 
