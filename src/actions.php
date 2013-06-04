@@ -52,10 +52,9 @@ if(isset($reserve)){
 	echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
 	echo '<br>'.'<br>';
 	//génération du codepin
-	$alphabet = "123456789";
-	$nbcar = 4; 
-	$i = 0;
-	$codepin = "";
+	$min = 1000;
+	$max = 9999;
+	$codepin = rand($min,$max);
 	//id = le dernier clef de la table booking + 1
 	//id permet de récupérer la réservation faite dans la table booking
 	$req="SELECT MAX(clef) FROM booking";
@@ -67,12 +66,8 @@ if(isset($reserve)){
 	$exec=@mysql_query($req,$id_link);
 	$res=@mysql_fetch_array($exec);
 	$ref=$res['MAX(ref)']+1;
-	//initialisation du hasard avec le moment en microsecondes.
-	srand((double)microtime()*1000000);
-	while ($i<$nbcar) {
-		$valcar = rand(1, strlen($alphabet));
-		$codepin .= substr($alphabet,$valcar,1);
-		$i++;
+	while(strlen($codepin)!=4){
+		$codepin = rand($min,$max);
 	}	
 	//echo "Voici le codepin: ".$codepin .'<br>' ;
 	//echo "Réservation créée par: ".$creator .'<br>' ;

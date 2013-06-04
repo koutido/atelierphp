@@ -13,13 +13,9 @@ function submitMe(obj){
 }
 
 function verif_date(){
-	if (document.Choix.jour.value.length<1){
-		alert("Veuillez choisir la date");
-		document.Choix.jour.focus();
-		return false;
-	}
+
 	if (document.forms[0].mois.value.length<1){
-		alert("Veuillez choisir le mois");
+		alert("Veuillez choisir au moins le mois");
 		document.forms[0].mois.focus();
 		return false;
 	}

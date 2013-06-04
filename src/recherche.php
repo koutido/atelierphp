@@ -137,7 +137,7 @@ if(isset($recherche)){
 		for($i=1;$i<$taille;$i++){
 			//on n'affiche pas la salle $room_number car elle est occupée
 			$val=$room_list[$i];
-			echo '<input type="radio" name="room_selected" value=',$val,'>Salle ',$val,'<br/>';
+			echo '<input type="radio" name="room_selected" value=',$val,'>FR Montpellier Virtual Room#',$val,'<br/>';
 		}
 		echo '<br>';
 		echo 'Créée par: '.'&nbsp';
@@ -174,7 +174,7 @@ if(isset($recherche)){
 	}
 }
 ?>
-<table border="1" width="1200">
+<table width="1200" style="border:1px solid #000000;border-collapse:collapse;">
 <tbody>
 <?php 
 	//////////////afficher toutes les réservation en les triant par le mois
@@ -191,14 +191,14 @@ if(isset($recherche)){
 		echo '<br><br>';
 ?>
 	<tr>
-		<td><p align="center"><b>Salle</b><p></td>
-		<td><p align="center"><b>Créée par</b><p></td>
-		<td><p align="center"><b>De</b><p></td>
-		<td><p align="center"><b>A</b><p></td>
-		<td><p align="center"><b>Demandeur</b><p></td>
-		<td><p align="center"><b>Code pin</b><p></td>
-		<td><p align="center"><b>Commentaire</b><p></td>
-		<td><p align="center"><b>Action</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Salle</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Créée par</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>De</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>A</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Demandeur</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Code pin</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Commentaire</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Action</b><p></td>
 	</tr>
 	
 <?php 
@@ -209,56 +209,63 @@ if(isset($recherche)){
 		$res2=@mysql_fetch_array($exec2);
 ?>
 	<tr>
-		<td>
+		<td style="border:1px solid black;">
 <?php
-		//numéro de la salle 
+		//numéro de la salle
+		echo "FR Montpellier Virtual Room#"; 
 		echo $res['room_number'];
+		if ($res['room_number']<10){
+			echo ' (6334000'.$res['room_number'].')';
+		}
+		else{
+			echo ' (633400'.$res['room_number'].')';
+		}		
 ?>
 		</td>
 	
-		<td>
+		<td style="border:1px solid black;">
 <?php 
 		//le créateur
 		echo $res2['creator'];
 ?>
 		</td>
 	
-		<td>
+		<td style="border:1px solid black;">
 <?php 
 		//l'heure de début
 		echo $res['start_hour'].'h'.$res['start_minute']." le ".$res['start_date'].'/'.$res['start_month'].'/'.$res['start_year'];
 ?>
 		</td>
 	
-		<td>
+		<td style="border:1px solid black;">
 <?php
 		//l'heure de fin 
 		echo $res['end_hour'].'h'.$res['end_minute']." le ".$res['end_date'].'/'.$res['end_month'].'/'.$res['end_year'];
 ?>
 		</td>
 	
-		<td>
+		<td style="border:1px solid black;">
 <?php 
 		//le demandeur
 		echo $res['email'];
 ?>
 		</td>
 
-		<td>
+		<td style="border:1px solid black;">
 <?php
 		//le code pin 	
 		echo $res2['code_pin'];
 ?>
 		</td>
 
-		<td>
+		<td style="border:1px solid black;">
 <?php 
 		//le commentaire
 		echo $res2['comment'];
 ?>
 		</td>
 
-		<td>
+		<td style="border:1px solid black;">
 <?php 
 		//les actions
 		echo '<input type="radio" id="delete" name="for_delete" value=',$cle,'>';
@@ -289,11 +296,20 @@ if(isset($recherche)){
 <?php 
 //////////////rechercher les salles réservées par date
 if(isset($date)){
-	
-	//cette requete retourne les salles réservées et les horaires
-	$req="SELECT * FROM booking
-	WHERE start_date=$jour AND start_month=$mois AND start_year=$an ORDER BY start_hour";
+	//si $ind_jour=0 afficher uniquement les réservations par mois
+	//$ind_jour=1 afficher jour et moi
+	$ind_jour;
 
+	//cette requete retourne les salles réservées et les horaires
+	if (strlen($jour)==0){
+		$req="SELECT * FROM booking WHERE start_month=$mois AND start_year=$an ORDER BY start_hour";
+		$ind_jour=0;
+	}
+	else{
+		$req="SELECT * FROM booking
+		WHERE start_date=$jour AND start_month=$mois AND start_year=$an ORDER BY start_hour";
+		$ind_jour=1;
+	}
 	$exec=@mysql_query($req,$id_link);
 	$cle;
 	//$res=@mysql_fetch_array($exec);
@@ -305,18 +321,29 @@ if(isset($date)){
 		echo '<input type="button" name="accueil" value="Accueil" onclick="submitMe(this)">&nbsp; &nbsp; &nbsp;';
 		echo '<input type="button" name="reservation" value="Reservation" onclick="submitMe(this)">';
 		echo '<br>'.'<br>';
-		echo "Liste des salles réservées au ";
-		echo "<font color=\"#0005F6\">$jour/$mois/$an</font>";
-		//echo '<div style="color:#160095;">'.$jour.'/'.$mois.'/'.$an.'</div>';
-		echo '<br>'.'<br>';
+		if($ind_jour==1){
+			echo "Liste des salles réservées au ";
+			echo "<font color=\"#0005F6\">$jour/$mois/$an</font>";
+			//echo '<div style="color:#160095;">'.$jour.'/'.$mois.'/'.$an.'</div>';
+			echo '<br>'.'<br>';
+		}
+		if($ind_jour==0){
+			echo "Liste des salles réservées au mois de ";
+			echo "<font color=\"#0005F6\">$mois/$an</font>";
+			//echo '<div style="color:#160095;">'.$jour.'/'.$mois.'/'.$an.'</div>';
+			echo '<br>'.'<br>';
+		}
+		
 ?>
 	<tr>
-		<td><p align="center"><b>Salle</b><p></td>
-		<td><p align="center"><b>Créée par</b><p></td>
-		<td><p align="center"><b>Demandeur</b><p></td>
-		<td><p align="center"><b>Code pin</b><p></td>
-		<td><p align="center"><b>Commentaire</b><p></td>
-		<td><p align="center"><b>Action</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Salle</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Créée par</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>De</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>A</b><p></td>		
+		<td style="border:1px solid black;"><p align="center"><b>Demandeur</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Code pin</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Commentaire</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Action</b><p></td>
 	</tr>
 <?php 
 		while($res=@mysql_fetch_array($exec)){
@@ -328,42 +355,73 @@ if(isset($date)){
 ?>
 
 	<tr>
-		<td>
+		<td style="border:1px solid black;">
 <?php
 		//numéro de la salle 
+		echo "FR Montpellier Virtual Room#";
 		echo $res['room_number'];
+		if ($res['room_number']<10){
+			echo ' (6334000'.$res['room_number'].')';
+		}
+		else{
+			echo ' (633400'.$res['room_number'].')';
+		}
 ?>
 		</td>
 	
-		<td>
+		<td style="border:1px solid black;">
 <?php 
 		//le créateur
 		echo $res2['creator'];
 ?>
 		</td>
+		
+		<td style="border:1px solid black;">
+<?php 
+		//l'heure de début
+		if($ind_jour==1){
+			echo $res['start_hour'].'h'.$res['start_minute']." le ".$res['start_date'].'/'.$res['start_month'].'/'.$res['start_year'];
+		}
+		if($ind_jour==0){
+			echo $res['start_hour'].'h'.$res['start_minute']." le ".$res['start_date'].'/'.$res['start_month'].'/'.$res['start_year'];
+		}
+?>
+		</td>
 	
-		<td>
+		<td style="border:1px solid black;">
+<?php
+		//l'heure de fin
+		if($ind_jour==1){ 
+			echo $res['end_hour'].'h'.$res['end_minute']." le ".$res['end_date'].'/'.$res['end_month'].'/'.$res['end_year'];
+		}
+		if($ind_jour==0){
+			echo $res['end_hour'].'h'.$res['end_minute']." le ".$res['end_date'].'/'.$res['end_month'].'/'.$res['end_year'];
+		}
+?>
+		</td>
+	
+		<td style="border:1px solid black;">
 <?php 
 		//le demandeur
 		echo $res['email'];
 ?>
 		</td>
 
-		<td>
+		<td style="border:1px solid black;">
 <?php
 		//le code pin 	
 		echo $res2['code_pin'];
 ?>
 		</td>
 
-		<td>
+		<td style="border:1px solid black;">
 <?php 
 		//le commentaire
 		echo $res2['comment'];
 ?>
 		</td>
 
-		<td>
+		<td style="border:1px solid black;">
 <?php 
 		//les actions
 		echo '<input type="radio" id="delete" name="for_delete" value=',$cle,'>';
@@ -410,13 +468,13 @@ if(isset($adresse)){
 		echo "<br/>".'<br>';
 ?>
 	<tr>
-		<td><p align="center"><b>Salle</b><p></td>
-		<td><p align="center"><b>Créée par</b><p></td>
-		<td><p align="center"><b>De</b><p></td>
-		<td><p align="center"><b>A</b><p></td>
-		<td><p align="center"><b>Code pin</b><p></td>
-		<td><p align="center"><b>Commentaire</b><p></td>
-		<td><p align="center"><b>Action</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Salle</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Créée par</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>De</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>A</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Code pin</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Commentaire</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Action</b><p></td>
 	</tr>
 <?php 
 		while($res=@mysql_fetch_array($exec)){
@@ -428,49 +486,56 @@ if(isset($adresse)){
 ?>
 
 	<tr>
-		<td>
+		<td style="border:1px solid black;">
 <?php
-		//numéro de la salle 
+		//numéro de la salle
+		echo "FR Montpellier Virtual Room#";
 		echo $res['room_number'];
+		if ($res['room_number']<10){
+			echo ' (6334000'.$res['room_number'].')';
+		}
+		else{
+			echo ' (633400'.$res['room_number'].')';
+		}
 ?>
 		</td>
 	
-		<td>
+		<td style="border:1px solid black;">
 <?php 
 		//le créateur
 		echo $res2['creator'];
 ?>
 		</td>
 	
-		<td>
+		<td style="border:1px solid black;">
 <?php 
 		//l'heure de début
 		echo $res['start_hour'].'h'.$res['start_minute']." le ".$res['start_date'].'/'.$res['start_month'].'/'.$res['start_year'];
 ?>
 		</td>
 	
-		<td>
+		<td style="border:1px solid black;">
 <?php
 		//l'heure de fin 
 		echo $res['end_hour'].'h'.$res['end_minute']." le ".$res['end_date'].'/'.$res['end_month'].'/'.$res['end_year'];
 ?>
 		</td>
 
-		<td>
+		<td style="border:1px solid black;">
 <?php
 		//le code pin 	
 		echo $res2['code_pin'];
 ?>
 		</td>
 
-		<td>
+		<td style="border:1px solid black;">
 <?php 
 		//le commentaire
 		echo $res2['comment'];
 ?>
 		</td>
 
-		<td>
+		<td style="border:1px solid black;">
 <?php 
 		//les actions
 		echo '<input type="radio" id="delete" name="for_delete" value=',$cle,'>';
@@ -516,13 +581,13 @@ if(isset($code)){
 		echo '<br><br>';
 ?>
 	<tr>
-		<td><p align="center"><b>Salle</b><p></td>
-		<td><p align="center"><b>Créée par</b><p></td>
-		<td><p align="center"><b>De</b><p></td>
-		<td><p align="center"><b>A</b><p></td>
-		<td><p align="center"><b>Demandeur</b><p></td>
-		<td><p align="center"><b>Commentaire</b><p></td>
-		<td><p align="center"><b>Action</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Salle</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Créée par</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>De</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>A</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Demandeur</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Commentaire</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Action</b><p></td>
 	</tr>
 <?php 
 		while($res=@mysql_fetch_array($exec)){
@@ -534,49 +599,56 @@ if(isset($code)){
 ?>
 
 	<tr>
-		<td>
+		<td style="border:1px solid black;">
 <?php
 		//numéro de la salle 
+		echo "FR Montpellier Virtual Room#";
 		echo $res['room_number'];
+		if ($res['room_number']<10){
+			echo ' (6334000'.$res['room_number'].')';
+		}
+		else{
+			echo ' (633400'.$res['room_number'].')';
+		}
 ?>
 		</td>
 	
-		<td>
+		<td style="border:1px solid black;">
 <?php 
 		//le créateur
 		echo $res2['creator'];
 ?>
 		</td>
 	
-		<td>
+		<td style="border:1px solid black;">
 <?php 
 		//l'heure de début
 		echo $res['start_hour'].'h'.$res['start_minute']." le ".$res['start_date'].'/'.$res['start_month'].'/'.$res['start_year'];
 ?>
 		</td>
 	
-		<td>
+		<td style="border:1px solid black;">
 <?php
 		//l'heure de fin 
 		echo $res['end_hour'].'h'.$res['end_minute']." le ".$res['end_date'].'/'.$res['end_month'].'/'.$res['end_year'];
 ?>
 		</td>
 	
-		<td>
+		<td style="border:1px solid black;">
 <?php 
 		//le demandeur
 		echo $res['email'];
 ?>
 		</td>
 
-		<td>
+		<td style="border:1px solid black;">
 <?php 
 		//le commentaire
 		echo $res2['comment'];
 ?>
 		</td>
 
-		<td>
+		<td style="border:1px solid black;">
 <?php 
 		//les actions
 		echo '<input type="radio" id="delete" name="for_delete" value=',$cle,'>';
@@ -622,13 +694,13 @@ if(isset($choix_creator)){
 		echo '<br><br>';
 ?>
 	<tr>
-		<td><p align="center"><b>Salle</b><p></td>
-		<td><p align="center"><b>De</b><p></td>
-		<td><p align="center"><b>A</b><p></td>
-		<td><p align="center"><b>Demandeur</b><p></td>
-		<td><p align="center"><b>Code pin</b><p></td>
-		<td><p align="center"><b>Commentaire</b><p></td>
-		<td><p align="center"><b>Action</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Salle</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>De</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>A</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Demandeur</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Code pin</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Commentaire</b><p></td>
+		<td style="border:1px solid black;"><p align="center"><b>Action</b><p></td>
 	</tr>
 <?php 
 		while($res=@mysql_fetch_array($exec)){
@@ -639,49 +711,56 @@ if(isset($choix_creator)){
 			$res2=@mysql_fetch_array($exec2);
 ?>
 	<tr>
-		<td>
+		<td style="border:1px solid black;">
 <?php
 		//numéro de la salle 
+		echo "FR Montpellier Virtual Room#";
 		echo $res['room_number'];
+		if ($res['room_number']<10){
+			echo ' (6334000'.$res['room_number'].')';
+		}
+		else{
+			echo ' (633400'.$res['room_number'].')';
+		}
 ?>
 		</td>
 	
-		<td>
+		<td style="border:1px solid black;">
 <?php 
 		//l'heure de début
 		echo $res['start_hour'].'h'.$res['start_minute']." le ".$res['start_date'].'/'.$res['start_month'].'/'.$res['start_year'];
 ?>
 		</td>
 	
-		<td>
+		<td style="border:1px solid black;">
 <?php
 		//l'heure de fin 
 		echo $res['end_hour'].'h'.$res['end_minute']." le ".$res['end_date'].'/'.$res['end_month'].'/'.$res['end_year'];
 ?>
 		</td>
 	
-		<td>
+		<td style="border:1px solid black;">
 <?php 
 		//le demandeur
 		echo $res['email'];
 ?>
 		</td>
 
-		<td>
+		<td style="border:1px solid black;">
 <?php
 		//le code pin 	
 		echo $res2['code_pin'];
 ?>
 		</td>
 
-		<td>
+		<td style="border:1px solid black;">
 <?php 
 		//le commentaire
 		echo $res2['comment'];
 ?>
 		</td>
 
-		<td>
+		<td style="border:1px solid black;">
 <?php 
 		//les actions
 		echo '<input type="radio" id="delete" name="for_delete" value=',$cle,'>';
